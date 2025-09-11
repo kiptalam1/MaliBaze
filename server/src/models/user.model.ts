@@ -17,14 +17,19 @@ const UserSchema = new mongoose.Schema(
 			type: String,
 			required: true,
 		},
+		role: {
+			type: String,
+			default: "user",
+		},
 	},
 	{ timestamps: true }
 );
 
-interface IUser extends Document {
+export interface IUser extends Document {
 	name: string;
 	email: string;
 	password: string;
+	role: String;
 }
 
 const User = mongoose.model<IUser>("User", UserSchema);

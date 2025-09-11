@@ -5,12 +5,13 @@ export const handleInputValidation = (
 	req: Request,
 	res: Response,
 	next: NextFunction
-) => {
+): void | Response => {
 	const errors = validationResult(req);
 
 	if (!errors.isEmpty()) {
-		res.status(400).json({
-			errors: errors.array().forEach((error) => error.msg),
+		const firstError = errors.array()[0]?.msg;
+		return res.status(400).json({
+			error: firstError,
 		});
 	}
 	next();
