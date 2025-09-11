@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+
+
+:root {
+  /* Brand */
+  --color-primary: #06b6d4;   /* Cyan-500 */
+  --color-secondary: #3b82f6; /* Blue-500 */
+  --color-accent: #1e40af;    /* Blue-700 */
+
+  /* Supporting */
+  --color-support-light: #ecfeff; /* Cyan-50 */
+  --color-support-dark: #0e7490;  /* Cyan-700 */
+
+  /* Neutrals (light mode defaults) */
+  --color-bg: #f9fafb;
+  --color-bg-card: #ffffff;
+  --color-text-primary: #111827;
+  --color-text-secondary: #6b7280;
+  --color-border: #d1d5db;
+
+  /* Semantic */
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+
+  /* Special Accent */
+  --color-highlight: #ec4899; /* Pink-500 (optional promo) */
+}
+
+.dark {
+  /* Brand colors stay the same */
+  --color-bg: #0f172a;
+  --color-bg-card: #1e293b;
+  --color-text-primary: #f8fafc;
+  --color-text-secondary: #e2e8f0;
+  --color-border: #334155;
+}
