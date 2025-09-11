@@ -1,6 +1,9 @@
 import express, { Router } from "express";
-import { registerUser } from "../controllers/auth.controllers.js";
-import { userAuthInputValidators } from "../validators/auth.validators.js";
+import { registerUser, loginUser } from "../controllers/auth.controllers.js";
+import {
+	userSignUpInputValidators,
+	userLoginInputValidators,
+} from "../validators/auth.validators.js";
 import { handleInputValidation } from "../middlewares/validation.middleware.js";
 
 const router: Router = express.Router();
@@ -8,9 +11,16 @@ const router: Router = express.Router();
 // routes;
 router.post(
 	"/signup",
-	userAuthInputValidators,
+	userSignUpInputValidators,
 	handleInputValidation,
 	registerUser
+);
+
+router.post(
+	"/login",
+	userLoginInputValidators,
+	handleInputValidation,
+	loginUser
 );
 
 export default router;

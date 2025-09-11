@@ -1,23 +1,40 @@
 import { checkSchema } from "express-validator";
 
-export const userAuthInputValidators = checkSchema({
+const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
+
+export const userLoginInputValidators = checkSchema({
 	email: {
-		notEmpty: {
-			errorMessage: "Email is required",
-		},
-		isEmail: {
-			errorMessage: "Input must be a valid email address",
-		},
+		trim: true,
+		toLowerCase: true,
+		notEmpty: { errorMessage: "Email is required" },
+		isEmail: { errorMessage: "Input must be a valid email address" },
 		normalizeEmail: true,
+	},
+	password: {
+		trim: true,
+		notEmpty: { errorMessage: "Password is required" },
+		isLength: {
+			options: { min: 8 },
+			errorMessage: "Password must be at least 8 characters long",
+		},
 		matches: {
-			options: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/],
-			errorMessage: "Email format is invalid",
+			options: passwordRegex,
+			errorMessage:
+				"Password must contain at least one uppercase letter, one number, and one special character",
 		},
 	},
+});
+
+export const userSignUpInputValidators = checkSchema({
+	email: {
+		toLowerCase: true,
+		trim: true,
+		notEmpty: { errorMessage: "Email is required" },
+		isEmail: { errorMessage: "Input must be a valid email address" },
+		normalizeEmail: true,
+	},
 	name: {
-		notEmpty: {
-			errorMessage: "Name is required",
-		},
+		notEmpty: { errorMessage: "Name is required" },
 		isLength: {
 			options: { min: 3, max: 50 },
 			errorMessage: "Name must be between 3 and 50 characters",
@@ -26,15 +43,14 @@ export const userAuthInputValidators = checkSchema({
 		escape: true,
 	},
 	password: {
-		notEmpty: {
-			errorMessage: "Password is required",
-		},
+		trim: true,
+		notEmpty: { errorMessage: "Password is required" },
 		isLength: {
 			options: { min: 8 },
-			errorMessage: "Password must be atleast 8 characters long",
+			errorMessage: "Password must be at least 8 characters long",
 		},
 		matches: {
-			options: [/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/],
+			options: passwordRegex,
 			errorMessage:
 				"Password must contain at least one uppercase letter, one number, and one special character",
 		},

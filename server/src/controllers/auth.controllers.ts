@@ -1,11 +1,13 @@
 import type { Request, Response } from "express";
 import User from "../models/user.model.js";
-import { hashPassword } from "../utils/password.utils.js";
+import { comparePassword, hashPassword } from "../utils/password.utils.js";
 
-interface RegisterFields {
+interface LoginFields {
 	email: string;
-	name: string;
 	password: string;
+}
+interface RegisterFields extends LoginFields {
+	name: string;
 }
 
 export const registerUser = async (
@@ -43,5 +45,45 @@ export const registerUser = async (
 				error: "Internal server error",
 			});
 		}
+	}
+};
+
+export const loginUser = async (
+	req: Request,
+	res: Response
+): Promise<Response | void> => {
+	const { email, password }: LoginFields = req.body;
+
+	try {
+		// check if user is registered;
+		const existingUser = await User.findOne({ email });
+		if (!existingUser) {
+			return res.status(404).json({
+				error: "User not found. Please sign up",
+			});
+		}
+		//then check if they provide correct password;
+		const isPasswordMatch = await comparePassword(
+			password,
+			existingUser.password
+		);
+		if (!isPasswordMatch) {
+			return res.status(403).json({
+				error: "Wrong password",
+			});
+		}
+
+		// otherwise provide a token;
+		// TODO ->⏳
+		//then return response;
+		return res.status(200).json({
+			message: "Login successful",
+			user: existingUser,
+		});
+	} catch (error) {
+		console.error("Failed to login user", (error as Error).message);
+		return res.status(500).json({
+			error: "Internal server error",
+		});
 	}
 };
