@@ -59,7 +59,9 @@ export const loginUser = async (
 
 	try {
 		// check if user is registered;
-		const existingUser = await User.findOne({ email });
+		const existingUser = await User.findOne({ email }).select(
+			"_id email name role password"
+		);
 		if (!existingUser) {
 			return res.status(404).json({
 				error: "User not found. Please sign up",
@@ -81,9 +83,10 @@ export const loginUser = async (
 		const userId: string = _id.toString();
 		const token: string = generateWebToken({ userId, role });
 		//then return response;
+		const { password: _, ...userData } = existingUser.toObject();
 		return res.status(200).json({
 			message: "Login successful",
-			user: existingUser,
+			user: userData,
 			token,
 		});
 	} catch (error) {
