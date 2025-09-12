@@ -1,6 +1,9 @@
 import type { Request, Response } from "express";
-import User from "../models/user.model.js";
+// import type { Types } from "mongoose";
+// import { type JWTPayload } from "../utils/token.utils.js";
+import User, { type IUser } from "../models/user.model.js";
 import { comparePassword, hashPassword } from "../utils/password.utils.js";
+import { generateWebToken } from "../utils/token.utils.js";
 
 interface LoginFields {
 	email: string;
@@ -74,11 +77,14 @@ export const loginUser = async (
 		}
 
 		// otherwise provide a token;
-		// TODO ->⏳
+		const { _id, role }: IUser = existingUser;
+		const userId: string = _id.toString();
+		const token: string = generateWebToken({ userId, role });
 		//then return response;
 		return res.status(200).json({
 			message: "Login successful",
 			user: existingUser,
+			token,
 		});
 	} catch (error) {
 		console.error("Failed to login user", (error as Error).message);
