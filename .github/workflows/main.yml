@@ -1,0 +1,47 @@
+name: Project Automation - Issue Assigned
+
+on:
+  issues:
+    types: [assigned]
+
+jobs:
+  move-to-in-progress:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update project status to In Progress
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const projectNumber = 2; // change if not your first project
+            const statusField = "Status";
+            const newStatus = "In Progress";
+
+            const { data: projects } = await github.rest.projects.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+
+            const project = projects.find(p => p.number === projectNumber);
+            if (!project) {
+              core.setFailed("Project not found.");
+              return;
+            }
+
+            const { data: columns } = await github.rest.projects.listColumns({
+              project_id: project.id,
+            });
+
+            const inProgressColumn = columns.find(c => c.name === newStatus);
+            if (!inProgressColumn) {
+              core.setFailed("In Progress column not found.");
+              return;
+            }
+
+            await github.rest.projects.createCard({
+              column_id: inProgressColumn.id,
+              content_id: context.payload.issue.id,
+              content_type: "Issue",
+            });
+
+            console.log(`✅ Moved issue #${context.payload.issue.number} to In Progress`);
