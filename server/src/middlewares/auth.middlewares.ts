@@ -30,7 +30,6 @@ export const authenticateUser = (
 	}
 };
 
-
 export const isAdmin = (
 	req: AuthenticatedRequest,
 	res: Response,
