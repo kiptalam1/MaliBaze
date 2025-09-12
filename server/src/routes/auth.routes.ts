@@ -9,6 +9,7 @@ import {
 	userLoginInputValidators,
 } from "../validators/auth.validators.js";
 import { handleInputValidation } from "../middlewares/validation.middleware.js";
+import { authenticateUser, isAdmin } from "../middlewares/auth.middlewares.js";
 
 const router: Router = express.Router();
 
@@ -28,5 +29,8 @@ router.post(
 );
 
 router.post("/logout", logoutUser);
+router.get("/admin-route", authenticateUser, isAdmin, (req, res) => {
+	res.json({ message: "accepted" });
+});
 
 export default router;

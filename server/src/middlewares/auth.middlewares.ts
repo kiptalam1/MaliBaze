@@ -29,3 +29,15 @@ export const authenticateUser = (
 		});
 	}
 };
+
+
+export const isAdmin = (
+	req: AuthenticatedRequest,
+	res: Response,
+	next: NextFunction
+): Response | void => {
+	if (req.user?.role !== "admin") {
+		return res.status(403).json({ error: "Unauthorized" });
+	}
+	next();
+};
