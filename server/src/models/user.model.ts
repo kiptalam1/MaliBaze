@@ -21,18 +21,28 @@ const UserSchema = new mongoose.Schema(
 		},
 		role: {
 			type: String,
+			enum: ["user", "admin"],
 			default: "user",
+		},
+		refreshToken: {
+			type: String,
+			default: null,
 		},
 	},
 	{ timestamps: true }
 );
 
+export enum Role {
+	User = "user",
+	Admin = "admin",
+}
 export interface IUser extends Document {
 	_id: Types.ObjectId;
 	name: string;
 	email: string;
 	password: string;
-	role: string;
+	role: Role;
+	refreshToken?: string | null;
 }
 
 const User = mongoose.model<IUser>("User", UserSchema);

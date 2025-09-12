@@ -1,5 +1,9 @@
 import express, { Router } from "express";
-import { registerUser, loginUser } from "../controllers/auth.controllers.js";
+import {
+	registerUser,
+	loginUser,
+	logoutUser,
+} from "../controllers/auth.controllers.js";
 import {
 	userSignUpInputValidators,
 	userLoginInputValidators,
@@ -22,5 +26,7 @@ router.post(
 	handleInputValidation,
 	loginUser
 );
+
+router.post("/logout", logoutUser);
 
 export default router;

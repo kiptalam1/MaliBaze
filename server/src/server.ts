@@ -1,6 +1,7 @@
 import express from "express";
 import type { Request, Response } from "express";
 import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 import morgan from "morgan";
 dotenv.config();
 
@@ -17,6 +18,7 @@ connectToMongoDb();
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // routes;
 app.get("/", (_req: Request, res: Response) => {

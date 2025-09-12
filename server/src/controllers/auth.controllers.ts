@@ -3,7 +3,11 @@ import type { Request, Response } from "express";
 // import { type JWTPayload } from "../utils/token.utils.js";
 import User, { type IUser } from "../models/user.model.js";
 import { comparePassword, hashPassword } from "../utils/password.utils.js";
-import { generateWebToken } from "../utils/token.utils.js";
+import {
+	generateAccessToken,
+	generateRefreshToken,
+} from "../utils/token.utils.js";
+import getEnv from "../utils/env.utils.js";
 
 interface LoginFields {
 	email: string;
@@ -81,18 +85,72 @@ export const loginUser = async (
 		// otherwise provide a token;
 		const { _id, role }: IUser = existingUser;
 		const userId: string = _id.toString();
-		const token: string = generateWebToken({ userId, role });
+		const accessToken: string = generateAccessToken({ userId, role });
+		const refreshToken: string = generateRefreshToken({ userId, role });
+
+		// store refresh token in db;
+		existingUser.refreshToken = refreshToken;
+		await existingUser.save();
+
+		// set refresh token in httpOnly cookie;
+		res.cookie("refreshToken", refreshToken, {
+			httpOnly: true,
+			secure: getEnv("NODE_ENV") === "production",
+			sameSite: "strict",
+			maxAge: 7 * 24 * 60 * 60 * 1000, //7days
+		});
+		console.log("refresh token", refreshToken);
 		//then return response;
-		const { password: _, ...userData } = existingUser.toObject();
+
 		return res.status(200).json({
 			message: "Login successful",
-			user: userData,
-			token,
+			user: {
+				id: userId,
+				name: existingUser.name,
+				email: existingUser.email,
+				role: existingUser.role,
+			},
+			accessToken,
 		});
 	} catch (error) {
 		console.error("Failed to login user", (error as Error).message);
 		return res.status(500).json({
 			error: "Internal server error",
 		});
+	}
+};
+
+interface AuthCookies {
+	refreshToken?: string;
+}
+export const logoutUser = async (req: Request, res: Response) => {
+	try {
+		const { refreshToken } = req.cookies as AuthCookies;
+
+		if (!refreshToken) {
+			console.log("❌ No refresh token found in cookies");
+			return res.status(200).json({
+				message: "Logged out",
+			});
+		}
+		// find a user with the refreshToken;
+		const user = await User.findOne({ refreshToken: refreshToken });
+
+		if (user) {
+			user.refreshToken = null;
+			await user.save();
+		}
+
+		// clear cookie;
+		res.clearCookie("refreshToken", {
+			httpOnly: true,
+			secure: getEnv("NODE_ENV") === "production",
+			sameSite: "strict",
+		});
+
+		return res.status(200).json({ message: "Logged out successfully" });
+	} catch (error) {
+		console.error("Logout failed", (error as Error).message);
+		return res.status(500).json({ error: "Internal server error" });
 	}
 };
