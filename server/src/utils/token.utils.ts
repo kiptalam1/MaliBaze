@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import getEnv from "./env.utils.js";
+// import User from "../models/user.model.js";
 
 export interface JWTPayload {
 	userId: string;
@@ -16,3 +17,4 @@ export const generateRefreshToken = ({ userId, role }: JWTPayload): string => {
 		expiresIn: "7d",
 	});
 };
+

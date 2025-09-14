@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
-// import type { Types } from "mongoose";
-// import { type JWTPayload } from "../utils/token.utils.js";
+import jwt from "jsonwebtoken";
+import { type JWTPayload } from "../utils/token.utils.js";
 import User, { type IUser } from "../models/user.model.js";
 import { comparePassword, hashPassword } from "../utils/password.utils.js";
 import {
@@ -92,12 +92,19 @@ export const loginUser = async (
 		existingUser.refreshToken = refreshToken;
 		await existingUser.save();
 
-		// set refresh token in httpOnly cookie;
+		// set access and refresh token in httpOnly cookie;
+		res.cookie("accessToken", accessToken, {
+			httpOnly: true,
+			secure: getEnv("NODE_ENV") === "production",
+			sameSite: "strict",
+			maxAge: 15 * 60 * 1000, //15min;
+		});
+
 		res.cookie("refreshToken", refreshToken, {
 			httpOnly: true,
 			secure: getEnv("NODE_ENV") === "production",
 			sameSite: "strict",
-			maxAge: 7 * 24 * 60 * 60 * 1000, //7days
+			maxAge: 7 * 24 * 60 * 60 * 1000, //7days;
 		});
 		//then return response;
 
@@ -109,7 +116,8 @@ export const loginUser = async (
 				email: existingUser.email,
 				role: existingUser.role,
 			},
-			accessToken,
+			// accessToken,
+			//refreshToken,
 		});
 	} catch (error) {
 		console.error("Failed to login user", (error as Error).message);
@@ -141,7 +149,7 @@ export const logoutUser = async (req: Request, res: Response) => {
 		}
 
 		// clear cookie;
-		res.clearCookie("refreshToken", {
+		res.clearCookie("accessToken", {
 			httpOnly: true,
 			secure: getEnv("NODE_ENV") === "production",
 			sameSite: "strict",
@@ -150,6 +158,76 @@ export const logoutUser = async (req: Request, res: Response) => {
 		return res.status(200).json({ message: "Logged out successfully" });
 	} catch (error) {
 		console.error("Logout failed", (error as Error).message);
+		return res.status(500).json({ error: "Internal server error" });
+	}
+};
+
+export const refreshAccessToken = async (
+	req: Request,
+	res: Response
+): Promise<Response | void> => {
+	try {
+		const refreshToken: string | undefined = req.cookies["refreshToken"];
+		// if cookie is missing;
+		if (!refreshToken) {
+			return res.status(401).json("No refresh token. Please login");
+		}
+		// verify refresh token;
+		let decoded: JWTPayload;
+		try {
+			decoded = jwt.verify(
+				refreshToken,
+				getEnv("REFRESH_SECRET")
+			) as JWTPayload;
+		} catch (error) {
+			const { name } = error as Error & { name?: string };
+			if (name === "TokenExpiredError") {
+				return res.status(401).json({ error: "Refresh token expired" });
+			}
+			return res.status(403).json({ error: "Invalid refresh token" });
+		}
+		const { userId, role } = decoded;
+
+		// compare with the one in db;
+		const user = await User.findById(userId).select("refreshToken role");
+		if (!user) {
+			return res.status(404).json({ error: "User not found" });
+		}
+		if (refreshToken !== user?.refreshToken) {
+			return res.status(403).json({ error: "Token mismatch" });
+		}
+		// if they match generate new tokens;
+		const newAccessToken = generateAccessToken({ userId, role });
+		const newRefreshToken = generateRefreshToken({ userId, role });
+		// rotate refresh token in db;
+		user.refreshToken = newRefreshToken;
+		await user.save();
+
+		// set token to http-only cookies;
+		const isProd = getEnv("NODE_ENV") === "production";
+		res.cookie("accessToken", newAccessToken, {
+			httpOnly: true,
+			secure: isProd,
+			sameSite: "strict",
+			maxAge: 15 * 60 * 1000, //15 minutes;
+		});
+
+		res.cookie("refreshToken", newRefreshToken, {
+			httpOnly: true,
+			secure: isProd,
+			sameSite: "strict",
+			maxAge: 7 * 24 * 60 * 60 * 1000, // 7days;
+		});
+
+		//return minimal response;
+		return res.status(200).json({
+			user: {
+				id: user._id,
+				role: user.role,
+			},
+		});
+	} catch (error) {
+		console.error("Error refreshing token :", (error as Error).message);
 		return res.status(500).json({ error: "Internal server error" });
 	}
 };

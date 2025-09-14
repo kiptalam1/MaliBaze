@@ -1,9 +1,9 @@
+import type { JWTPayload } from "./../utils/token.utils.js";
 import jwt from "jsonwebtoken";
 import type { Request, Response, NextFunction } from "express";
 import getEnv from "../utils/env.utils.js";
-import type { JWTPayload } from "../utils/token.utils.js";
 
-interface AuthenticatedRequest extends Request {
+export interface AuthenticatedRequest extends Request {
 	user?: JWTPayload;
 }
 export const authenticateUser = (
@@ -12,8 +12,7 @@ export const authenticateUser = (
 	next: NextFunction
 ): void | Response => {
 	try {
-		const authHeader = req.headers["authorization"];
-		const token = authHeader && authHeader.split("Bearer ")[1];
+		const token: string | undefined = req.cookies["accessToken"];
 		if (!token) {
 			return res.status(401).json({
 				error: "Access denied. Please login",
@@ -23,6 +22,16 @@ export const authenticateUser = (
 		req.user = decoded;
 		next();
 	} catch (error) {
+		if ((error as Error).name === "TokenExpiredError") {
+			return res
+				.status(401)
+				.json({ error: "Token expired. Please login again." });
+		}
+		if ((error as Error).name === "JsonWebTokenError") {
+			return res
+				.status(401)
+				.json({ error: "Invalid token. Please login again" });
+		}
 		console.error("Error authenticating user", (error as Error).message);
 		return res.status(500).json({
 			error: "Internal server error",
