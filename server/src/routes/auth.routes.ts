@@ -3,6 +3,7 @@ import {
 	registerUser,
 	loginUser,
 	logoutUser,
+	refreshAccessToken,
 } from "../controllers/auth.controllers.js";
 import {
 	userSignUpInputValidators,
@@ -32,5 +33,5 @@ router.post("/logout", logoutUser);
 router.get("/admin-route", authenticateUser, isAdmin, (req, res) => {
 	res.json({ message: "accepted" });
 });
-
+router.post("/refresh-token", refreshAccessToken);
 export default router;
