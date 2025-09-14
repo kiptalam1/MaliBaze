@@ -9,6 +9,7 @@ import { userProfileUpdateInputValidators } from "../validators/user.validators.
 const router = express.Router();
 
 router.get("/me", authenticateUser, getMyProfile);
+
 router.patch(
 	"/update-profile",
 	authenticateUser,
