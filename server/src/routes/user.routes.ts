@@ -5,6 +5,7 @@ import {
 } from "../controllers/user.controllers.js";
 import { authenticateUser } from "../middlewares/auth.middlewares.js";
 import { userProfileUpdateInputValidators } from "../validators/user.validators.js";
+import { handleInputValidation } from "../middlewares/validation.middleware.js";
 
 const router = express.Router();
 
@@ -13,6 +14,7 @@ router.patch(
 	"/update-profile",
 	authenticateUser,
 	userProfileUpdateInputValidators,
+	handleInputValidation,
 	updateMyProfile
 );
 
