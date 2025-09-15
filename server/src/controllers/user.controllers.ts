@@ -3,6 +3,7 @@ import User, { type IUser } from "../models/user.model.js";
 import type { Response } from "express";
 import type { JWTPayload } from "../utils/token.utils.js";
 
+
 export const getMyProfile = async (
 	req: AuthenticatedRequest,
 	res: Response
@@ -27,6 +28,7 @@ export const getMyProfile = async (
 		});
 	}
 };
+
 
 // utility to remove undefined keys from req.body;
 function removeUndefined<T extends Record<string, any>>(obj: T): Partial<T> {
@@ -105,3 +107,4 @@ export const updateMyProfile = async (
 		return res.status(500).json({ error: "Internal server error" });
 	}
 };
+
