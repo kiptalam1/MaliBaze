@@ -16,18 +16,6 @@ router.patch(
 	updateMyProfile
 );
 
-router.patch(
-	"/update-profile",
-	authenticateUser,
-	userProfileUpdateInputValidators,
-	updateMyProfile
-);
 
-router.patch(
-	"/update-profile",
-	authenticateUser,
-	userProfileUpdateInputValidators,
-	updateMyProfile
-);
 
 export default router;
