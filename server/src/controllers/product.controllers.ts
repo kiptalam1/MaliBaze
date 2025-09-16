@@ -1,8 +1,9 @@
 import type { Request, Response } from "express";
 import { MongoServerError } from "mongodb";
 import Product from "../models/product.model.js";
-import Category, { type ICategory } from "../models/category.model.js";
+import { type ICategory } from "../models/category.model.js";
 import { generateSKU } from "../utils/product.utils.js";
+import { findOrCreateCategory } from "../utils/category.utils.js";
 
 interface CreateProductDTO {
 	name: string;
@@ -20,12 +21,7 @@ export const createProduct = async (
 		const { name: productName, description, price, category, sku } = req.body;
 
 		// Ensure category exists
-		let categoryDoc: ICategory | null = await Category.findOne({
-			name: category,
-		});
-		if (!categoryDoc) {
-			categoryDoc = await Category.create({ name: category });
-		}
+		let categoryDoc: ICategory | null = await findOrCreateCategory(category);
 
 		// Generate SKU if not provided
 		const generatedSKU = await generateSKU(categoryDoc.name, productName);
@@ -116,14 +112,7 @@ export const updateProduct = async (
 		// ensure category exists if provided;
 		let categoryDoc: ICategory | null = null;
 		if (category) {
-			categoryDoc = await Category.findOne({
-				name: category,
-			});
-			if (!categoryDoc) {
-				categoryDoc = await Category.create({
-					name: category,
-				});
-			}
+			categoryDoc = await findOrCreateCategory(category);
 		}
 
 		const updatedProduct = await Product.findByIdAndUpdate(
@@ -147,5 +136,6 @@ export const updateProduct = async (
 			return res.status(400).json({ error: "SKU must be unique" });
 		}
 		console.error("Error updating product", (error as Error).message);
+		return res.status(500).json({ error: "Internal server error" });
 	}
 };

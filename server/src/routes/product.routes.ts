@@ -24,11 +24,11 @@ router.post(
 // all users/visitors can browse the products;
 router.get("/", getAllProducts);
 router.patch(
-	"/product/:id",
+	"/:id",
 	authenticateUser,
 	isAdmin,
 	updateProductValidators,
 	handleInputValidation,
 	updateProduct
-); 
+);
 export default router;
