@@ -30,5 +30,5 @@ router.patch(
 	updateProductValidators,
 	handleInputValidation,
 	updateProduct
-); 
+);
 export default router;
