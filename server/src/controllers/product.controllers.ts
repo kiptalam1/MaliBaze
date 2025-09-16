@@ -59,3 +59,46 @@ export const createProduct = async (
 		return res.status(500).json({ error: "Internal server error" });
 	}
 };
+
+
+export const getAllProducts = async (
+	req: Request,
+	res: Response
+): Promise<Response | void> => {
+	try {
+		const page: number = Math.max(
+			1,
+			parseInt(req.query["page"] as string, 10) || 1
+		);
+		const limit: number = Math.min(
+			100,
+			Math.max(1, parseInt(req.query["limit"] as string, 10) || 20)
+		);
+		const skip = (page - 1) * limit;
+
+		// count total products;
+		const total = await Product.estimatedDocumentCount();
+
+		// fetch products with pagination;
+		const products = await Product.find()
+			.populate("category", "name")
+			.select("-__v -updatedAt")
+			.skip(skip)
+			.limit(limit)
+			.sort({ createdAt: -1 });
+
+		// pagination metadata;
+		const totalPages = Math.ceil(total / limit);
+
+		return res.status(200).json({
+			page,
+			limit,
+			total,
+			totalPages,
+			products,
+		});
+	} catch (error) {
+		console.error("Error fetching products", (error as Error).message);
+		return res.status(500).json({ error: "Internal server error" });
+	}
+};
