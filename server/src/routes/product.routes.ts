@@ -7,6 +7,7 @@ import {
 import { handleInputValidation } from "../middlewares/validation.middleware.js";
 import {
 	createProduct,
+	deleteProduct,
 	getAllProducts,
 	updateProduct,
 } from "../controllers/product.controllers.js";
@@ -31,4 +32,5 @@ router.patch(
 	handleInputValidation,
 	updateProduct
 );
+router.delete("/:id", authenticateUser, isAdmin, deleteProduct);
 export default router;
