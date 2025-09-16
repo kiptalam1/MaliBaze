@@ -1,8 +1,7 @@
 import type { Request, Response } from "express";
 import { MongoServerError } from "mongodb";
 import Product from "../models/product.model.js";
-import Category, { type CategoryDocument } from "../models/category.model.js";
-import type mongoose from "mongoose";
+import Category, { type ICategory } from "../models/category.model.js";
 import { generateSKU } from "../utils/product.utils.js";
 
 interface CreateProductDTO {
@@ -21,15 +20,14 @@ export const createProduct = async (
 		const { name: productName, description, price, category, sku } = req.body;
 
 		// Ensure category exists
-		const CategoryModel = Category as mongoose.Model<CategoryDocument>;
-		let categoryDoc: CategoryDocument | null = await CategoryModel.findOne({
+		let categoryDoc: ICategory | null = await Category.findOne({
 			name: category,
 		});
 		if (!categoryDoc) {
-			categoryDoc = new CategoryModel({ name: category }) as CategoryDocument;
-			await categoryDoc.save();
+			categoryDoc = await Category.create({ name: category });
 		}
 
+		// Generate SKU if not provided
 		const generatedSKU = await generateSKU(categoryDoc.name, productName);
 		// Create product using category _id
 		const product = await Product.create({
@@ -39,12 +37,6 @@ export const createProduct = async (
 			category: categoryDoc._id,
 			sku: sku || generatedSKU,
 		});
-
-		const products = await Product.find()
-			.select("_id sku")
-			.sort({ createdAt: -1 });
-
-		console.log("products", products);
 
 		return res.status(201).json({
 			message: "Product created successfully",
@@ -59,7 +51,6 @@ export const createProduct = async (
 		return res.status(500).json({ error: "Internal server error" });
 	}
 };
-
 
 export const getAllProducts = async (
 	req: Request,
@@ -100,5 +91,61 @@ export const getAllProducts = async (
 	} catch (error) {
 		console.error("Error fetching products", (error as Error).message);
 		return res.status(500).json({ error: "Internal server error" });
+	}
+};
+
+interface UpdateProductDTO {
+	// id: string;
+	name?: string;
+	description?: string;
+	price?: number;
+	category?: string;
+	sku?: string;
+}
+
+export const updateProduct = async (
+	req: Request<{ id: string }, {}, UpdateProductDTO>,
+	res: Response
+): Promise<Response | void> => {
+	try {
+		const productId = req.params.id;
+
+		// fields to update;
+		const { name, description, price, sku, category } = req.body;
+		const formattedSKU = sku?.replace(/\s+/g, "").toUpperCase();
+		// ensure category exists if provided;
+		let categoryDoc: ICategory | null = null;
+		if (category) {
+			categoryDoc = await Category.findOne({
+				name: category,
+			});
+			if (!categoryDoc) {
+				categoryDoc = await Category.create({
+					name: category,
+				});
+			}
+		}
+
+		const updatedProduct = await Product.findByIdAndUpdate(
+			productId,
+			{
+				name,
+				description,
+				price,
+				sku: formattedSKU,
+				category: categoryDoc?._id,
+			},
+			{ returnDocument: "after" }
+		).populate("category", "name");
+
+		return res.status(200).json({
+			message: "Product updated successfully",
+			product: updatedProduct,
+		});
+	} catch (error) {
+		if (error instanceof MongoServerError && error.code === "11000") {
+			return res.status(400).json({ error: "SKU must be unique" });
+		}
+		console.error("Error updating product", (error as Error).message);
 	}
 };
