@@ -1,13 +1,10 @@
-import mongoose, { Schema, Types, type HydratedDocument } from "mongoose";
+import mongoose, { Model, Schema, Types } from "mongoose";
 
 // Plain fields only, no Document
 export interface ICategory {
 	_id: Types.ObjectId;
 	name: string;
 }
-
-// Hydrated version used at runtime
-export type CategoryDocument = HydratedDocument<ICategory>;
 
 const CategorySchema = new Schema<ICategory>(
 	{
@@ -21,8 +18,8 @@ const CategorySchema = new Schema<ICategory>(
 	{ timestamps: true }
 );
 
-const Category =
-	mongoose.models["Category"] ||
+const Category: Model<ICategory> =
+	(mongoose.models["Category"] as Model<ICategory>) ||
 	mongoose.model<ICategory>("Category", CategorySchema);
 
 export default Category;

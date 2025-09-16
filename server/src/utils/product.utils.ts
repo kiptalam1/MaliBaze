@@ -1,5 +1,4 @@
-import type mongoose from "mongoose";
-import Category, { type CategoryDocument } from "../models/category.model.js";
+import Category, { type ICategory } from "../models/category.model.js";
 import Product, { type IProduct } from "../models/product.model.js";
 
 export const generateSKU = async (
@@ -11,13 +10,11 @@ export const generateSKU = async (
 		str.replace(/\s+/g, "").slice(0, length).toUpperCase();
 
 	// Ensure category exists
-	const CategoryModel = Category as mongoose.Model<CategoryDocument>;
-	let categoryDoc: CategoryDocument | null = await CategoryModel.findOne({
+	let categoryDoc: ICategory | null = await Category.findOne({
 		name: categoryName,
 	});
 	if (!categoryDoc) {
-		categoryDoc = new CategoryModel({ name: categoryName }) as CategoryDocument;
-		await categoryDoc.save();
+		categoryDoc = await Category.create({ name: categoryName });
 	}
 
 	// fetch latest product for this category using categoryDoc._id
