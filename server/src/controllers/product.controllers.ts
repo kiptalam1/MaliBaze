@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import { MongoServerError } from "mongodb";
 import Product from "../models/product.model.js";
-import { type ICategory } from "../models/category.model.js";
+import Category, { type ICategory } from "../models/category.model.js";
 import { generateSKU } from "../utils/product.utils.js";
 import { findOrCreateCategory } from "../utils/category.utils.js";
 import mongoose from "mongoose";
@@ -50,31 +50,40 @@ export const createProduct = async (
 };
 
 export const getAllProducts = async (
-	req: Request,
+	req: Request<{}, {}, {}, { category: string; page: string; limit: string }>,
 	res: Response
 ): Promise<Response | void> => {
 	try {
-		const page: number = Math.max(
-			1,
-			parseInt(req.query["page"] as string, 10) || 1
-		);
+		const category = req.query.category;
+		const page: number = Math.max(1, parseInt(req.query.page, 10) || 1);
 		const limit: number = Math.min(
 			100,
-			Math.max(1, parseInt(req.query["limit"] as string, 10) || 20)
+			Math.max(1, parseInt(req.query.limit, 10) || 20)
 		);
 		const skip = (page - 1) * limit;
 
-		// count total products;
-		const total = await Product.estimatedDocumentCount();
+		const filter: { category?: any } = {};
+		// when category is in query, find the category then create filter;
+		if (category) {
+			const categoryDoc = await Category.findOne({ name: category }).select(
+				"_id"
+			);
+			if (!categoryDoc) {
+				return res.status(404).json({ error: "This category was not found" });
+			}
+			filter.category = categoryDoc._id;
+		}
 
-		// fetch products with pagination;
-		const products = await Product.find()
+		// fetch products based on the category filter with pagination;
+		const products = await Product.find(filter)
 			.populate("category", "name")
 			.select("-__v -updatedAt")
 			.skip(skip)
 			.limit(limit)
 			.sort({ createdAt: -1 });
 
+		// count total products;
+		const total = await Product.countDocuments(filter);
 		// pagination metadata;
 		const totalPages = Math.ceil(total / limit);
 
@@ -174,3 +183,4 @@ export const deleteProduct = async (
 		return res.status(500).json({ error: "Internal server error" });
 	}
 };
+
