@@ -6,6 +6,7 @@ import {
 } from "../validators/product.validators.js";
 import { handleInputValidation } from "../middlewares/validation.middleware.js";
 import {
+	addProductToCart,
 	createProduct,
 	deleteProduct,
 	getAllProducts,
@@ -33,4 +34,6 @@ router.patch(
 	updateProduct
 );
 router.delete("/:id", authenticateUser, isAdmin, deleteProduct);
+router.post("/:id", authenticateUser, addProductToCart);
+
 export default router;
