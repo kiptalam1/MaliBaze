@@ -50,11 +50,16 @@ export const createProduct = async (
 };
 
 export const getAllProducts = async (
-	req: Request<{}, {}, {}, { category: string; page: string; limit: string }>,
+	req: Request<
+		{},
+		{},
+		{},
+		{ category: string; page: string; limit: string; search: string }
+	>,
 	res: Response
 ): Promise<Response | void> => {
 	try {
-		const category = req.query.category;
+		const { category, search } = req.query;
 		const page: number = Math.max(1, parseInt(req.query.page, 10) || 1);
 		const limit: number = Math.min(
 			100,
@@ -62,7 +67,14 @@ export const getAllProducts = async (
 		);
 		const skip = (page - 1) * limit;
 
-		const filter: { category?: any } = {};
+		const filter: any = {};
+		// add search query filter if provided;
+
+		if (search) {
+			// name or description is included in regex;
+			const regex = { $regex: search, $options: "i" };
+			filter.$or = [{ name: regex }, { description: regex }];
+		}
 		// when category is in query, find the category then create filter;
 		if (category) {
 			const categoryDoc = await Category.findOne({ name: category }).select(

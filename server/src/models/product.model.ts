@@ -48,7 +48,10 @@ const ProductSchema = new mongoose.Schema<IProduct>(
 );
 
 ProductSchema.index({ category: 1 });
-ProductSchema.index({ name: "text", description: "text" });
+ProductSchema.index(
+	{ name: "text", description: "text" },
+	{ default_language: "english" }
+);
 ProductSchema.index({ sku: 1 }, { unique: true });
 
 
