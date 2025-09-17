@@ -34,6 +34,6 @@ router.patch(
 	updateProduct
 );
 router.delete("/:id", authenticateUser, isAdmin, deleteProduct);
-router.post("/:id", authenticateUser, addProductToCart);
+router.post("/item/cart/:id", authenticateUser, addProductToCart);
 
 export default router;
