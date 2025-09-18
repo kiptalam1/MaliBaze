@@ -80,7 +80,7 @@ export const removeProductFromCart = async (
 		const { id: productId } = req.params;
 
 		if (!userId) {
-			return res.status(400).json({ error: "Unauthorized. Please login" });
+			return res.status(401).json({ error: "Unauthorized. Please login" });
 		}
 
 		if (!mongoose.Types.ObjectId.isValid(productId)) {
@@ -108,6 +108,98 @@ export const removeProductFromCart = async (
 		});
 	} catch (error) {
 		console.error("Error removing product from cart", (error as Error).message);
+		return res.status(500).json({ error: "Internal server error" });
+	}
+};
+
+export const incrementProductQuantity = async (
+	req: Request<{ id: string }> & AuthenticatedRequest,
+	res: Response
+): Promise<Response | void> => {
+	const { id: productId } = req.params;
+	const userId = req.user?.userId;
+
+	try {
+		if (!userId) {
+			return res.status(401).json({ error: "Unauthorized. Please login." });
+		}
+
+		if (!mongoose.Types.ObjectId.isValid(productId)) {
+			return res.status(400).json({ error: "Invalid product ID" });
+		}
+
+		const cart = await Cart.findOne({ user: userId });
+		if (!cart) {
+			return res.status(404).json({ error: "Cart not found" });
+		}
+		const productInCart = cart.products.find(
+			(p) => p.product.toString() === productId
+		);
+		if (!productInCart) {
+			return res.status(404).json({ error: "Product not in cart" });
+		}
+		productInCart.quantity += 1;
+		await cart.save();
+
+		return res.status(200).json({
+			cart,
+		});
+	} catch (error) {
+		console.error(
+			"Error in incrementProductQuantity",
+			(error as Error).message
+		);
+		return res.status(500).json({ error: "Internal server error" });
+	}
+};
+
+export const decrementProductQuantity = async (
+	req: Request<{ id: string }> & AuthenticatedRequest,
+	res: Response
+): Promise<Response | void> => {
+	const { id: productId } = req.params;
+	const userId = req.user?.userId;
+	try {
+		if (!userId) {
+			return res.status(401).json({ error: "Unauthorized. Please login." });
+		}
+
+		if (!mongoose.Types.ObjectId.isValid(productId)) {
+			return res.status(400).json({ error: "Invalid product ID" });
+		}
+
+		const cart = await Cart.findOne({ user: userId });
+		if (!cart) {
+			return res.status(404).json({ error: "Cart not found" });
+		}
+		const productIndex = cart.products.findIndex(
+			(p) => p.product.toString() === productId
+		);
+		if (productIndex === -1) {
+			return res.status(404).json({ error: "Product not in cart" });
+		}
+
+		const product = cart.products[productIndex];
+		if (!product) {
+			return res.status(404).json({ error: "Product not in cart" });
+		}
+
+		if (product.quantity > 1) {
+			// decrement quantity;
+			product.quantity -= 1;
+		} else {
+			cart.products.splice(productIndex, 1);
+		}
+		await cart.save();
+		return res.status(200).json({
+			message: "Product quantity decremented",
+			cart,
+		});
+	} catch (error) {
+		console.error(
+			"Error in decrementProductQuantity",
+			(error as Error).message
+		);
 		return res.status(500).json({ error: "Internal server error" });
 	}
 };
