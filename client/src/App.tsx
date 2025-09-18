@@ -1,7 +1,9 @@
+import { Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
 function App() {
 	return (
 		<>
-			<p className="read-the-docs">welcome to maliblaze</p>
+			<Navbar />
 		</>
 	);
 }

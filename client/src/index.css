@@ -2,7 +2,9 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-
+*{
+  font-family: "Inter", sans-serif;
+}
 
 :root {
   /* Brand */
@@ -37,4 +39,8 @@
   --color-text-primary: #f8fafc;
   --color-text-secondary: #e2e8f0;
   --color-border: #334155;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Poppins", sans-serif;
 }
