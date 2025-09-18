@@ -6,10 +6,12 @@ import {
 	decrementProductQuantity,
 	incrementProductQuantity,
 	removeProductFromCart,
+	getUserCart,
 } from "../controllers/cart.controllers.js";
 
 const router = express.Router();
 
+router.get("/", authenticateUser, getUserCart);
 router.post("/item/:id", authenticateUser, addProductToCart);
 router.delete("/item/:id", authenticateUser, removeProductFromCart);
 router.patch("/item/:id/increment", authenticateUser, incrementProductQuantity);

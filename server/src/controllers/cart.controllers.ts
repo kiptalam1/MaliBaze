@@ -203,3 +203,38 @@ export const decrementProductQuantity = async (
 		return res.status(500).json({ error: "Internal server error" });
 	}
 };
+
+
+export const getUserCart = async (
+	req: AuthenticatedRequest,
+	res: Response
+): Promise<Response | void> => {
+	try {
+		const userId = req.user?.userId;
+
+		if (!userId) {
+			return res.status(401).json({ error: "Access denied. Please login" });
+		}
+
+		const cart = await Cart.findOne({ user: userId }).populate(
+			"products.product",
+			"name price"
+		);
+
+		if (!cart) {
+			return res.status(200).json({
+				cart: {
+					user: userId,
+					products: [],
+				},
+			});
+		}
+		return res.status(200).json({ cart });
+	} catch (error) {
+		console.error(
+			"Error in decrementProductQuantity",
+			(error as Error).message
+		);
+		return res.status(500).json({ error: "Internal server error" });
+	}
+};
