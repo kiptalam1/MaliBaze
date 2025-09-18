@@ -226,10 +226,36 @@ export const getUserCart = async (
 				cart: {
 					user: userId,
 					products: [],
+					totalQuantity: 0,
+					uniqueItems: 0,
+					totalAmount: 0,
 				},
 			});
 		}
-		return res.status(200).json({ cart });
+		// calculate counts;
+		const totalQuantity = cart.products.reduce(
+			(sum, item) => sum + item.quantity,
+			0
+		);
+
+		const uniqueItems = cart.products.length;
+
+		const totalAmount = cart.products.reduce((sum, item) => {
+			const product = item.product as unknown as {
+				name: string;
+				price: number;
+			};
+			return sum + (product?.price || 0) * item.quantity;
+		}, 0);
+
+		return res.status(200).json({
+			cart: {
+				...cart.toObject(),
+				totalQuantity,
+				uniqueItems,
+				totalAmount,
+			},
+		});
 	} catch (error) {
 		console.error(
 			"Error in decrementProductQuantity",
