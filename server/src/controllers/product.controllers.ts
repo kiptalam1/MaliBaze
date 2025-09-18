@@ -264,3 +264,44 @@ export const addProductToCart = async (
 		return res.status(500).json({ error: "Internal server error" });
 	}
 };
+
+export const removeProductFromCart = async (
+	req: Request<{ id: string }> & AuthenticatedRequest,
+	res: Response
+): Promise<Response | void> => {
+	try {
+		const userId = req.user?.userId;
+		const { id: productId } = req.params;
+
+		if (!userId) {
+			return res.status(400).json({ error: "Unauthorized. Please login" });
+		}
+
+		if (!mongoose.Types.ObjectId.isValid(productId)) {
+			return res.status(400).json({ error: "Invalid product ID" });
+		}
+
+		const cart = await Cart.findOne({ user: userId });
+		if (!cart) {
+			return res.status(404).json({ error: "Cart not found" });
+		}
+
+		// if cart is there then find the product;
+		const productIndex = cart.products.findIndex(
+			(p) => p.product.toString() === productId
+		);
+		if (productIndex === -1) {
+			return res.status(404).json({ error: "Product not in cart" });
+		}
+		cart.products.splice(productIndex, 1);
+		await cart.save();
+
+		return res.status(200).json({
+			message: "Product removed from cart",
+			cart,
+		});
+	} catch (error) {
+		console.error("Error removing product from cart", (error as Error).message);
+		return res.status(500).json({ error: "Internal server error" });
+	}
+};

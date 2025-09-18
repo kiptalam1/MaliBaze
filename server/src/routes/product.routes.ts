@@ -10,6 +10,7 @@ import {
 	createProduct,
 	deleteProduct,
 	getAllProducts,
+	removeProductFromCart,
 	updateProduct,
 } from "../controllers/product.controllers.js";
 
@@ -35,5 +36,6 @@ router.patch(
 );
 router.delete("/:id", authenticateUser, isAdmin, deleteProduct);
 router.post("/item/cart/:id", authenticateUser, addProductToCart);
+router.delete("/item/cart/:id", authenticateUser, removeProductFromCart);
 
 export default router;
