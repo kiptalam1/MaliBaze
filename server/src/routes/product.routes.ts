@@ -6,11 +6,9 @@ import {
 } from "../validators/product.validators.js";
 import { handleInputValidation } from "../middlewares/validation.middleware.js";
 import {
-	addProductToCart,
 	createProduct,
 	deleteProduct,
 	getAllProducts,
-	removeProductFromCart,
 	updateProduct,
 } from "../controllers/product.controllers.js";
 
@@ -35,7 +33,5 @@ router.patch(
 	updateProduct
 );
 router.delete("/:id", authenticateUser, isAdmin, deleteProduct);
-router.post("/item/cart/:id", authenticateUser, addProductToCart);
-router.delete("/item/cart/:id", authenticateUser, removeProductFromCart);
 
 export default router;
