@@ -3,7 +3,7 @@ import SellingPointCard from "./cards/SellingPointCard";
 
 const SellingPoints = () => {
 	return (
-		<section className="w-full bg-[var(--color-bg)] text-[var(--color-text-primary)] flex flex-col sm:flex-row items-center gap-5 py-10 px-8 justify-around">
+		<section className="w-full flex flex-col sm:flex-row items-center gap-5 py-10 px-8 justify-around">
 			<SellingPointCard
 				icon={
 					<Truck absoluteStrokeWidth className="text-[var(--color-primary)]" />
