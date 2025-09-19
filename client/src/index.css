@@ -49,3 +49,11 @@
 h1, h2, h3, h4, h5, h6 {
   font-family: "Poppins", sans-serif;
 }
+
+img {
+  -webkit-user-select: none;
+  -webkit-user-drag: none; /* stops dragging in WebKit browsers */
+  -moz-user-select: none;
+  -moz-user-drag: none;
+  user-select: none;
+}
