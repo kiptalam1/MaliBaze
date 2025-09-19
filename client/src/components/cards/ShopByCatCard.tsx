@@ -15,8 +15,8 @@ const ShopByCatCard = ({
 		<div
 			onClick={onClick}
 			className="flex flex-col items-center justify-center gap-3 py-5 px-6 bg-[var(--color-bg-card)] 
-            w-full sm:w-[180px] md:w-[200px] lg:w-[240px] rounded-lg cursor-pointer 
-            hover:shadow-md transition-shadow">
+            w-full sm:w-[180px] md:w-[200px] lg:w-[240px] rounded-lg cursor-pointer shadow
+            hover:shadow-lg transition-shadow">
 			<div className="w-[120px] h-[120px] lg:w-[150px] lg:h-[150px] rounded-full overflow-hidden">
 				<img
 					src={imageSrc}

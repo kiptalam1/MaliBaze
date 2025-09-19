@@ -36,7 +36,7 @@ const FeaturedProducts = () => {
 	];
 
 	return (
-		<div className="w-full px-1 sm:px-5 py:6 sm:py-10 flex flex-col gap-5">
+		<div className="w-full px-4 py:6 sm:py-10 flex flex-col gap-5">
 			<h4 className="text-3xl font-semibold text-center">Featured Products</h4>
 			<p className="text-base text-[var(--color-text-secondary)] text-center">
 				Discover our handpicked selection of amazing products

@@ -15,7 +15,7 @@ const ProductCard = ({
 	price,
 }: ProductCardProps) => {
 	return (
-		<div className="w-full sm:w-[300px] lg:w-[350px] h-[350px] rounded-lg shadow-lg flex flex-col gap-4 text:sm">
+		<div className="w-full sm:w-[300px] lg:w-[350px] h-[350px] rounded-lg shadow-md flex flex-col gap-4 text:sm bg-[var(--color-bg-card)]">
 			<div className="w-full h-[200px]">
 				<img
 					src={imageSrc}

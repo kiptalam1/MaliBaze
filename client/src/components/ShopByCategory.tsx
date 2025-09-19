@@ -10,7 +10,7 @@ const categories = [
 
 const ShopByCategory = () => {
 	return (
-		<div className="w-full flex flex-col gap-5 items-center justify-center py-8 px-1 sm:px-4 md:px-6 lg:px-8">
+		<div className="w-full flex flex-col gap-5 items-center justify-center py-8 px-4 sm:px-4 md:px-6 lg:px-8">
 			<h4 className="text-3xl font-semibold">Shop by Category</h4>
 			<p className="text-base text-[var(--color-text-secondary)]">
 				Explore our wide range of product categories
