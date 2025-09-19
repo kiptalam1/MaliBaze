@@ -4,6 +4,7 @@
 
 *{
   font-family: "Inter", sans-serif;
+
 }
 
 :root {
@@ -15,6 +16,9 @@
   /* Supporting */
   --color-support-light: #ecfeff; /* Cyan-50 */
   --color-support-dark: #0e7490;  /* Cyan-700 */
+
+  --color-primary-lightest: color-mix(in oklab, var(--color-primary) 25%, white);
+
 
   /* Neutrals (light mode defaults) */
   --color-bg: #f9fafb;
@@ -30,6 +34,7 @@
 
   /* Special Accent */
   --color-highlight: #ec4899; /* Pink-500 (optional promo) */
+
 }
 
 .dark {
