@@ -85,7 +85,7 @@ const Navbar = () => {
 				<label htmlFor="search-products" className="relative">
 					<Search
 						size={16}
-						className="absolute left-2 top-1/2 -translate-y-1/2 text-[var(--color-text-secondary)] z-10"
+						className="absolute left-2 top-1/2 -translate-y-1/2 text-[var(--color-text-secondary)] z-1"
 					/>
 					<input
 						type="text"
@@ -176,7 +176,7 @@ const Navbar = () => {
 			<button
 				type="button"
 				onClick={() => setMenuOpen(!menuOpen)}
-				className="lg:hidden p-2">
+				className="lg:hidden p-2 cursor-pointer">
 				{menuOpen ? <X size={22} /> : <Menu size={22} />}
 			</button>
 
@@ -188,7 +188,7 @@ const Navbar = () => {
 						animate={{ x: 0 }}
 						exit={{ x: "-100%" }}
 						transition={{ type: "spring", stiffness: 300, damping: 30 }}
-						className="fixed top-0 left-0 h-full w-2/3 bg-[var(--color-bg-card)] flex flex-col p-6 gap-5">
+						className="fixed top-0 left-0 h-full w-2/3 sm:w-1/3 bg-[var(--color-bg-card)] flex flex-col p-6 gap-5 z-2">
 						<NavLink
 							to="/home"
 							onClick={() => setMenuOpen(false)}
@@ -216,10 +216,13 @@ const Navbar = () => {
 
 						{/* Mobile Drawer Icons */}
 						<div className="flex flex-col gap-4 mt-6">
-							<div className="flex items-center gap-3 cursor-pointer hover:text-[var(--color-primary)]">
+							<NavLink
+								to="/wishlist"
+								onClick={() => setMenuOpen(false)}
+								className="flex items-center gap-3 cursor-pointer hover:text-[var(--color-primary)]">
 								<Heart size={18} />
 								<span>Wishlist</span>
-							</div>
+							</NavLink>
 							<NavLink
 								to="/cart"
 								onClick={() => setMenuOpen(false)}
