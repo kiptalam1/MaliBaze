@@ -5,7 +5,7 @@ const CategoryPageHeader = () => {
 	const [isActive, setIsActive] = useState<boolean>(false);
 
 	return (
-		<div className="flex flex-col gap-3 items-center py-5 sm:py-8 md:py-10 px-4 sm:px-6 md:px-8 lg:px-10 text-center">
+		<div className="flex flex-col gap-3 items-center py-5 sm:py-8 md:py-10 px-4 sm:px-6 md:px-8 lg:px-10 text-center bg-linear-to-r/oklab from-[var(--color-bg)] via-[var(--color-border)] to-[var(--color-bg-card)]">
 			<h1 className="text-3xl sm:text-4xl font-semibold sm:font-bold">
 				Shop By Category
 			</h1>

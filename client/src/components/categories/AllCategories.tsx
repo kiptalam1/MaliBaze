@@ -12,7 +12,7 @@ const AllCategories = () => {
 		<div className="px-4 sm:px-6 md:px-8 lg:px-10 py-4 space-y-6">
 			<div className="flex gap-5 justify-between items-center">
 				<h2 className="text-lg sm:text-2xl font-semibold">All Categories</h2>
-				<p className="text-xs p-1 bg-[var(--color-primary-lightest)] ">
+				<p className="text-xs p-1 bg-[var(--color-primary-lightest)] text-[var(--color-primary)] rounded-lg">
 					<span className="mr-1 text-xs">{categories.length}</span>categories
 				</p>
 			</div>
