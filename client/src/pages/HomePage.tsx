@@ -1,8 +1,8 @@
-import FeaturedProducts from "../components/FeaturedProducts";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
-import SellingPoints from "../components/SellingPoints";
-import ShopByCategory from "../components/ShopByCategory";
+import FeaturedProducts from "../components/ui/FeaturedProducts";
+import Footer from "../components/ui/Footer";
+import Header from "../components/ui/Header";
+import SellingPoints from "../components/ui/SellingPoints";
+import ShopByCategory from "../components/ui/ShopByCategory";
 
 const HomePage = () => {
 	return (

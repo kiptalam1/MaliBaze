@@ -1,5 +1,5 @@
 import { ShoppingCart } from "lucide-react";
-import BouncyButton from "../BouncyButton";
+import BouncyButton from "../ui/BouncyButton";
 
 export interface ProductCardProps {
 	imageSrc: string;

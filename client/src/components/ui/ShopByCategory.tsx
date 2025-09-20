@@ -1,4 +1,4 @@
-import ShopByCatCard from "./cards/ShopByCatCard";
+import ShopByCatCard from "../cards/ShopByCatCard";
 
 const categories = [
 	{ imageSrc: "/electronics.jpg", category: "Electronics", count: 30 },

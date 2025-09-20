@@ -1,5 +1,5 @@
 import { Truck, Shield, Headphones, RotateCcw } from "lucide-react";
-import SellingPointCard from "./cards/SellingPointCard";
+import SellingPointCard from "../cards/SellingPointCard";
 
 const SellingPoints = () => {
 	return (

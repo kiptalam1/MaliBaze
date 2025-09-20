@@ -43,7 +43,7 @@ const Navbar = () => {
 			{/* Desktop Links */}
 			<div className="hidden lg:flex items-center gap-6 text-sm">
 				<NavLink
-					to="/home"
+					to="/"
 					className={({ isActive }) =>
 						isActive
 							? "text-base text-[var(--color-primary)] font-semibold"
@@ -190,7 +190,7 @@ const Navbar = () => {
 						transition={{ type: "spring", stiffness: 300, damping: 30 }}
 						className="fixed top-0 left-0 h-full w-2/3 sm:w-1/3 bg-[var(--color-bg-card)] flex flex-col p-6 gap-5 z-2">
 						<NavLink
-							to="/home"
+							to="/"
 							onClick={() => setMenuOpen(false)}
 							className="flex gap-3 items-center">
 							<House size={18} /> Home

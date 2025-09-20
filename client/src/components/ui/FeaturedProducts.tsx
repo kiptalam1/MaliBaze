@@ -1,7 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import BouncyButton from "./BouncyButton";
-import ProductCard from "./cards/ProductCard";
-import { type ProductCardProps } from "./cards/ProductCard";
+import ProductCard from "../cards/ProductCard";
+import { type ProductCardProps } from "../cards/ProductCard";
 
 const FeaturedProducts = () => {
 	const featuredProducts: ProductCardProps[] = [
