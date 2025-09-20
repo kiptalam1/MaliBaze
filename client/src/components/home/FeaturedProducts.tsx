@@ -1,5 +1,5 @@
 import { ArrowRight } from "lucide-react";
-import BouncyButton from "./BouncyButton";
+import BouncyButton from "../ui/BouncyButton";
 import ProductCard from "../cards/ProductCard";
 import { type ProductCardProps } from "../cards/ProductCard";
 

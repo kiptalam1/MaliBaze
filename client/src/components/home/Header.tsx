@@ -1,4 +1,4 @@
-import BouncyButton from "./BouncyButton";
+import BouncyButton from "../ui/BouncyButton";
 
 const Header = () => {
 	return (
