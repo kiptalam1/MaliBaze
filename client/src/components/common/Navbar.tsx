@@ -17,12 +17,13 @@ import {
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
+import UserDropdown from "../ui/modals/UserDropdown";
 
 const Navbar = () => {
 	const [darkMode, setDarkMode] = useState<boolean>(false);
 	const [isActive, setIsActive] = useState<boolean>(false);
 	const [menuOpen, setMenuOpen] = useState<boolean>(false);
-
+	const [isOpenUserDropdown, setIsOpenUserDropdown] = useState<boolean>(false);
 	// add/remove dark class on <html>
 	useEffect(() => {
 		if (darkMode) {
@@ -31,6 +32,15 @@ const Navbar = () => {
 			document.documentElement.classList.remove("dark");
 		}
 	}, [darkMode]);
+
+	// when drawer is open, make the body unscrollable;
+	useEffect(() => {
+		if (menuOpen) {
+			document.body.style.overflow = "hidden";
+		} else {
+			document.body.style.overflow = "";
+		}
+	}, [menuOpen]);
 
 	return (
 		<nav className="w-full flex items-center justify-between gap-1 bg-[var(--color-bg-card)] text-[var(--color-text-primary)] p-4">
@@ -108,7 +118,7 @@ const Navbar = () => {
 			</div>
 
 			{/* Desktop Icons */}
-			<div className="hidden md:flex items-center gap-5 px-5">
+			<div className="hidden md:flex items-center gap-5 px-5 relative">
 				<button
 					type="button"
 					onClick={() => setDarkMode(!darkMode)}
@@ -168,8 +178,16 @@ const Navbar = () => {
 				</NavLink>
 				<User
 					size={18}
+					onClick={() => setIsOpenUserDropdown((prev) => !prev)}
 					className="hover:text-[var(--color-primary)] cursor-pointer transition-colors duration-200"
 				/>
+				{/* USER MODAL */}
+				{isOpenUserDropdown && (
+					<UserDropdown
+						isOpen={isOpenUserDropdown}
+						onClose={() => setIsOpenUserDropdown(false)}
+					/>
+				)}
 			</div>
 
 			{/* Hamburger for Mobile */}
@@ -230,9 +248,18 @@ const Navbar = () => {
 								<ShoppingCart size={18} />
 								<span>Cart</span>
 							</NavLink>
-							<div className="flex items-center gap-3 cursor-pointer hover:text-[var(--color-primary)]">
+							<div
+								className="flex items-center gap-3 cursor-pointer hover:text-[var(--color-primary)] relative"
+								onClick={() => setIsOpenUserDropdown((prev) => !prev)}>
 								<User size={18} />
 								<span>Account</span>
+								{/* USER MODAL */}
+								{isOpenUserDropdown && (
+									<UserDropdown
+										isOpen={isOpenUserDropdown}
+										onClose={() => setIsOpenUserDropdown(false)}
+									/>
+								)}
 							</div>
 							<button
 								type="button"
