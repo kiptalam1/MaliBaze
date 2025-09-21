@@ -15,16 +15,18 @@ import {
 	Store,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
-import { motion, AnimatePresence } from "motion/react";
-import UserDropdown from "../ui/modals/UserDropdown";
+import { NavLink, useNavigate } from "react-router-dom";
+import UserModal from "../ui/modals/UserModal";
 
 const Navbar = () => {
 	const [darkMode, setDarkMode] = useState<boolean>(false);
 	const [isActive, setIsActive] = useState<boolean>(false);
 	const [menuOpen, setMenuOpen] = useState<boolean>(false);
-	const [isOpenUserDropdown, setIsOpenUserDropdown] = useState<boolean>(false);
-	// add/remove dark class on <html>
+	const [isUserModalOpen, setIsUserModalOpen] = useState<boolean>(false);
+
+	const navigate = useNavigate();
+
+	// toggle dark mode class
 	useEffect(() => {
 		if (darkMode) {
 			document.documentElement.classList.add("dark");
@@ -33,14 +35,22 @@ const Navbar = () => {
 		}
 	}, [darkMode]);
 
-	// when drawer is open, make the body unscrollable;
+	// prevent body scroll when menu/modal open
 	useEffect(() => {
-		if (menuOpen) {
+		if (menuOpen || isUserModalOpen) {
 			document.body.style.overflow = "hidden";
 		} else {
 			document.body.style.overflow = "";
 		}
-	}, [menuOpen]);
+	}, [menuOpen, isUserModalOpen]);
+
+	const handleUserNavigate = (path: string) => {
+		setIsUserModalOpen(false);
+		setMenuOpen(false);
+		window.setTimeout(() => {
+			navigate(path);
+		}, 20);
+	};
 
 	return (
 		<nav className="w-full flex items-center justify-between gap-1 bg-[var(--color-bg-card)] text-[var(--color-text-primary)] p-4">
@@ -50,8 +60,8 @@ const Navbar = () => {
 				<h1 className="hidden lg:block text-lg">MaliBaze</h1>
 			</div>
 
-			{/* Desktop Links */}
-			<div className="hidden lg:flex items-center gap-6 text-sm">
+			{/* Page links - visible sm and above */}
+			<div className="hidden sm:flex items-center gap-6 text-sm">
 				<NavLink
 					to="/"
 					className={({ isActive }) =>
@@ -90,19 +100,21 @@ const Navbar = () => {
 				</NavLink>
 			</div>
 
-			{/* Search */}
-			<div>
-				<label htmlFor="search-products" className="relative">
+			{/* Search - always visible */}
+			<div className="flex-1 flex justify-center px-4">
+				<label
+					htmlFor="search-products"
+					className="relative w-full max-w-xs sm:max-w-sm">
 					<Search
 						size={16}
-						className="absolute left-2 top-1/2 -translate-y-1/2 text-[var(--color-text-secondary)] z-1"
+						className="absolute left-2 top-1/2 -translate-y-1/2 text-[var(--color-text-secondary)]"
 					/>
 					<input
 						type="text"
 						id="search-products"
 						aria-label="search products"
 						placeholder="Search products"
-						className="h-8 w-48 sm:w-64 py-1 pl-8 pr-8 rounded-2xl bg-[var(--color-bg)] border-none outline-none focus:ring-[var(--color-primary)] focus:ring-1 text-base"
+						className="h-8 w-full py-1 pl-8 pr-8 rounded-2xl bg-[var(--color-bg)] border-none outline-none focus:ring-[var(--color-primary)] focus:ring-1 text-base"
 						onFocus={() => setIsActive(true)}
 						onBlur={(e) => setIsActive(e.target.value !== "")}
 					/>
@@ -117,96 +129,52 @@ const Navbar = () => {
 				</label>
 			</div>
 
-			{/* Desktop Icons */}
-			<div className="hidden md:flex items-center gap-5 px-5 relative">
+			{/* Icons - md and above */}
+			<div className="hidden md:flex items-center gap-5 px-5">
 				<button
 					type="button"
 					onClick={() => setDarkMode(!darkMode)}
-					className="w-6 h-6 flex items-center justify-center cursor-pointer">
-					<AnimatePresence>
-						{darkMode ? (
-							<motion.div
-								key="sun"
-								initial={{ rotate: -180, opacity: 0, scale: 0.5 }}
-								animate={{ rotate: 0, opacity: 1, scale: 1 }}
-								exit={{ rotate: 180, opacity: 0, scale: 0.5 }}
-								transition={{
-									duration: 0.4,
-									scale: {
-										type: "spring",
-										visualDuration: 0.4,
-										stiffness: 300,
-										damping: 20,
-										bounce: 0.5,
-									},
-								}}>
-								<Sun size={18} className="text-yellow-500" />
-							</motion.div>
-						) : (
-							<motion.div
-								key="moon"
-								initial={{ rotate: 100, opacity: 0, scale: 0.5 }}
-								animate={{ rotate: 0, opacity: 1, scale: 1 }}
-								exit={{ rotate: -100, opacity: 0, scale: 0.5 }}
-								transition={{
-									duration: 0.4,
-									scale: {
-										type: "spring",
-										visualDuration: 0.4,
-										stiffness: 300,
-										damping: 20,
-										bounce: 0.5,
-									},
-								}}>
-								<Moon className="text-indigo-400" size={18} />
-							</motion.div>
-						)}
-					</AnimatePresence>
+					className="w-6 h-6 flex items-center justify-center">
+					{darkMode ? (
+						<Sun size={18} className="text-yellow-500" />
+					) : (
+						<Moon className="text-indigo-400" size={18} />
+					)}
 				</button>
-				<Heart
-					size={18}
-					className="hover:text-[var(--color-primary)] cursor-pointer transition-colors duration-200"
-				/>
-				<NavLink
-					to="/cart"
-					className={({ isActive }) =>
-						isActive
-							? "text-[var(--color-primary)] cursor-pointer font-semibold"
-							: "hover:text-[var(--color-primary)] cursor-pointer transition-colors duration-200"
-					}>
+				<NavLink to="/wishlist" className="hover:text-[var(--color-primary)]">
+					<Heart size={18} />
+				</NavLink>
+				<NavLink to="/cart" className="hover:text-[var(--color-primary)]">
 					<ShoppingCart size={18} />
 				</NavLink>
-				<User
-					size={18}
-					onClick={() => setIsOpenUserDropdown((prev) => !prev)}
-					className="hover:text-[var(--color-primary)] cursor-pointer transition-colors duration-200"
-				/>
-				{/* USER MODAL */}
-				{isOpenUserDropdown && (
-					<UserDropdown
-						isOpen={isOpenUserDropdown}
-						onClose={() => setIsOpenUserDropdown(false)}
-					/>
-				)}
+				<button
+					type="button"
+					onClick={() => setIsUserModalOpen(true)}
+					className="hover:text-[var(--color-primary)]"
+					aria-label="Open account modal">
+					<User size={18} />
+				</button>
 			</div>
 
-			{/* Hamburger for Mobile */}
+			<UserModal
+				isOpen={isUserModalOpen}
+				onClose={() => setIsUserModalOpen(false)}
+				onNavigate={handleUserNavigate}
+			/>
+
+			{/* Hamburger - only below md */}
 			<button
 				type="button"
 				onClick={() => setMenuOpen(!menuOpen)}
-				className="lg:hidden p-2 cursor-pointer">
+				className="md:hidden p-2">
 				{menuOpen ? <X size={22} /> : <Menu size={22} />}
 			</button>
 
-			{/* Mobile Drawer */}
-			<AnimatePresence>
-				{menuOpen && (
-					<motion.div
-						initial={{ x: "-100%" }}
-						animate={{ x: 0 }}
-						exit={{ x: "-100%" }}
-						transition={{ type: "spring", stiffness: 300, damping: 30 }}
-						className="fixed top-0 left-0 h-full w-2/3 sm:w-1/3 bg-[var(--color-bg-card)] flex flex-col p-6 gap-5 z-2">
+			{/* Drawer */}
+			{menuOpen && (
+				<div className="fixed top-0 left-0 h-full w-2/3 sm:w-1/3 bg-[var(--color-bg-card)] flex flex-col p-6 gap-5 z-40 md:hidden transition-transform duration-300">
+					{/* Phone (<sm): routes + icons */}
+					<div className="flex flex-col gap-4 sm:hidden">
 						<NavLink
 							to="/"
 							onClick={() => setMenuOpen(false)}
@@ -232,89 +200,74 @@ const Navbar = () => {
 							<Store size={18} /> About
 						</NavLink>
 
-						{/* Mobile Drawer Icons */}
-						<div className="flex flex-col gap-4 mt-6">
+						<div className="mt-6 flex flex-col gap-4">
+							<button
+								type="button"
+								onClick={() => setDarkMode(!darkMode)}
+								className="flex gap-3 items-center">
+								{darkMode ? <Sun size={18} /> : <Moon size={18} />} Dark Mode
+							</button>
 							<NavLink
 								to="/wishlist"
 								onClick={() => setMenuOpen(false)}
-								className="flex items-center gap-3 cursor-pointer hover:text-[var(--color-primary)]">
-								<Heart size={18} />
-								<span>Wishlist</span>
+								className="flex gap-3 items-center">
+								<Heart size={18} /> Wishlist
 							</NavLink>
 							<NavLink
 								to="/cart"
 								onClick={() => setMenuOpen(false)}
-								className="flex items-center gap-3 cursor-pointer hover:text-[var(--color-primary)]">
-								<ShoppingCart size={18} />
-								<span>Cart</span>
+								className="flex gap-3 items-center">
+								<ShoppingCart size={18} /> Cart
 							</NavLink>
-							<div
-								className="flex items-center gap-3 cursor-pointer hover:text-[var(--color-primary)] relative"
-								onClick={() => setIsOpenUserDropdown((prev) => !prev)}>
-								<User size={18} />
-								<span>Account</span>
-								{/* USER MODAL */}
-								{isOpenUserDropdown && (
-									<UserDropdown
-										isOpen={isOpenUserDropdown}
-										onClose={() => setIsOpenUserDropdown(false)}
-									/>
-								)}
-							</div>
 							<button
 								type="button"
-								onClick={() => setDarkMode(!darkMode)}
-								className="flex items-center gap-3 cursor-pointer">
-								<AnimatePresence>
-									{darkMode ? (
-										<motion.div
-											key="sun-mobile"
-											initial={{ rotate: -180, opacity: 0, scale: 0.5 }}
-											animate={{ rotate: 0, opacity: 1, scale: 1 }}
-											exit={{ rotate: 180, opacity: 0, scale: 0.5 }}
-											transition={{
-												duration: 0.4,
-												scale: {
-													type: "spring",
-													visualDuration: 0.4,
-													stiffness: 300,
-													damping: 20,
-													bounce: 0.5,
-												},
-											}}>
-											<div className="flex items-center gap-2">
-												<Sun size={18} className="text-yellow-500" />
-												<span>Light</span>
-											</div>
-										</motion.div>
-									) : (
-										<motion.div
-											key="moon-mobile"
-											initial={{ rotate: 100, opacity: 0, scale: 0.5 }}
-											animate={{ rotate: 0, opacity: 1, scale: 1 }}
-											exit={{ rotate: -100, opacity: 0, scale: 0.5 }}
-											transition={{
-												duration: 0.4,
-												scale: {
-													type: "spring",
-													visualDuration: 0.4,
-													stiffness: 300,
-													damping: 20,
-													bounce: 0.5,
-												},
-											}}>
-											<div className="flex items-center gap-2">
-												<Moon size={18} className="text-indigo-400" />
-												<span>Dark</span>
-											</div>
-										</motion.div>
-									)}
-								</AnimatePresence>
+								onClick={() => {
+									setMenuOpen(false);
+									setIsUserModalOpen(true);
+								}}
+								className="flex gap-3 items-center">
+								<User size={18} /> Account
 							</button>
 						</div>
-					</motion.div>
-				)}
-			</AnimatePresence>
+					</div>
+
+					{/* Small tablets (sm–md): icons only */}
+					<div className="hidden sm:flex md:hidden flex-col gap-4">
+						<button
+							type="button"
+							onClick={() => setDarkMode(!darkMode)}
+							className="flex gap-3 items-center">
+							{darkMode ? <Sun size={18} /> : <Moon size={18} />} Dark Mode
+						</button>
+						<NavLink
+							to="/wishlist"
+							onClick={() => setMenuOpen(false)}
+							className="flex gap-3 items-center">
+							<Heart size={18} /> Wishlist
+						</NavLink>
+						<NavLink
+							to="/cart"
+							onClick={() => setMenuOpen(false)}
+							className="flex gap-3 items-center">
+							<ShoppingCart size={18} /> Cart
+						</NavLink>
+						<button
+							type="button"
+							onClick={() => {
+								setMenuOpen(false);
+								setIsUserModalOpen(true);
+							}}
+							className="flex gap-3 items-center">
+							<User size={18} /> Account
+						</button>
+					</div>
+
+					<div className="flex-1" />
+					<div className="text-xs text-[var(--color-text-secondary)]">
+						© MaliBaze
+					</div>
+				</div>
+			)}
 		</nav>
 	);
 };
