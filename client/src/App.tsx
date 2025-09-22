@@ -3,6 +3,7 @@ import Navbar from "./components/common/Navbar";
 import HomePage from "./pages/HomePage";
 import CategoryPage from "./pages/CategoryPage";
 import RegisterPage from "./pages/RegisterPage";
+import LoginPage from "./pages/LoginPage";
 
 function App() {
 	return (
@@ -12,6 +13,7 @@ function App() {
 				<Route path="/" element={<HomePage />} />
 				<Route path="/categories" element={<CategoryPage />} />
 				<Route path="/auth/register" element={<RegisterPage />} />
+				<Route path="/auth/login" element={<LoginPage />} />
 			</Routes>
 		</div>
 	);
