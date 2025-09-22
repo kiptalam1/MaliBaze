@@ -1,3 +1,4 @@
+import { useSearch } from "../../contexts/SearchContext";
 import useFetch from "../../hooks/useFetch";
 import ShopByCatCard from "../cards/ShopByCatCard";
 import LoadingSpinner from "../ui/LoadingSpinner";
@@ -10,9 +11,10 @@ export interface Product {
 	imageUrl: string;
 }
 const AllCategories = () => {
+	const { categoryFilter } = useSearch();
 	const { data: productsData, isPending } = useFetch<{ products: Product[] }>(
-		"/api/products",
-		"products"
+		`/api/products?category=${categoryFilter}`,
+		["products", categoryFilter]
 	);
 
 	const categoriesMap = new Map<string, { imageUrl: string; count: number }>();

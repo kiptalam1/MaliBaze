@@ -9,7 +9,7 @@ import { Toaster } from "sonner";
 function App() {
 	return (
 		<div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text-primary)]">
-			<Toaster richColors />
+			<Toaster richColors position="top-center" />
 			<Navbar />
 			<Routes>
 				<Route path="/" element={<HomePage />} />

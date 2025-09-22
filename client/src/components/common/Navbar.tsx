@@ -17,13 +17,14 @@ import {
 import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import UserModal from "../ui/modals/UserModal";
+import { useSearch } from "../../contexts/SearchContext";
 
 const Navbar = () => {
 	const [darkMode, setDarkMode] = useState<boolean>(false);
 	const [isActive, setIsActive] = useState<boolean>(false);
 	const [menuOpen, setMenuOpen] = useState<boolean>(false);
 	const [isUserModalOpen, setIsUserModalOpen] = useState<boolean>(false);
-
+	const { productSearch, setProductSearch } = useSearch();
 	const navigate = useNavigate();
 
 	// toggle dark mode class
@@ -117,10 +118,12 @@ const Navbar = () => {
 						className="h-8 w-full py-1 pl-8 pr-8 rounded-2xl bg-[var(--color-bg)] border-none outline-none focus:ring-[var(--color-primary)] focus:ring-1 text-base"
 						onFocus={() => setIsActive(true)}
 						onBlur={(e) => setIsActive(e.target.value !== "")}
+						value={productSearch}
+						onChange={(e) => setProductSearch(e.target.value)}
 					/>
 					<SendHorizonal
 						size={18}
-						className={`absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer ${
+						className={`absolute right-2 top-1/2 -translate-y-1/2 ${
 							isActive
 								? "text-[var(--color-primary)]"
 								: "text-[var(--color-text-secondary)]"

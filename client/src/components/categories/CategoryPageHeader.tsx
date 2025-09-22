@@ -1,9 +1,10 @@
 import { Filter, Search } from "lucide-react";
 import { useState } from "react";
+import { useSearch } from "../../contexts/SearchContext";
 
 const CategoryPageHeader = () => {
 	const [isActive, setIsActive] = useState<boolean>(false);
-
+	const { categoryFilter, setCategoryFilter } = useSearch();
 	return (
 		<div className="flex flex-col gap-3 items-center py-5 sm:py-8 md:py-10 px-4 sm:px-6 md:px-8 lg:px-10 text-center bg-linear-to-r/oklab from-[var(--color-bg)] via-[var(--color-border)] to-[var(--color-bg-card)]">
 			<h1 className="text-3xl sm:text-4xl font-semibold sm:font-bold">
@@ -29,10 +30,12 @@ const CategoryPageHeader = () => {
 						className="h-8 w-60 sm:w-72 py-1 pl-8 pr-8 rounded-2xl bg-[var(--color-bg)] border border-[var(--color-border)] outline-none focus:ring-[var(--color-primary)] focus:ring-1 text-base"
 						onFocus={() => setIsActive(true)}
 						onBlur={(e) => setIsActive(e.target.value !== "")}
+						value={categoryFilter}
+						onChange={(e) => setCategoryFilter(e.target.value)}
 					/>
 					<Filter
 						size={18}
-						className={`absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer ${
+						className={`absolute right-2 top-1/2 -translate-y-1/2 ${
 							isActive
 								? "text-[var(--color-primary)]"
 								: "text-[var(--color-text-secondary)]"

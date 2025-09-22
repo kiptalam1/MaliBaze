@@ -86,11 +86,11 @@ export const getAllProducts = async (
 		}
 		// when category is in query, find the category then create filter;
 		if (category) {
-			const categoryDoc = await Category.findOne({ name: category }).select(
-				"_id"
-			);
+			const categoryDoc = await Category.findOne({
+				name: { $regex: category, $options: "i" },
+			}).select("_id");
 			if (!categoryDoc) {
-				return res.status(404).json({ error: "This category was not found" });
+				return res.status(404).json({ message: "This category was not found" });
 			}
 			filter.category = categoryDoc._id;
 		}
