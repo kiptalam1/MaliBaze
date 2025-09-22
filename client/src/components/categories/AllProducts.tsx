@@ -1,7 +1,6 @@
-import { div } from "motion/react-client";
 import useFetch from "../../hooks/useFetch";
-import ProductCard, { type ProductProps } from "../cards/ProductCard";
-import { LoaderPinwheel } from "lucide-react";
+import ProductCard from "../cards/ProductCard";
+import LoadingSpinner from "../ui/LoadingSpinner";
 
 interface ProductDataProps {
 	products: {
@@ -32,12 +31,7 @@ const AllProducts = () => {
 			</div>
 			<div className="flex flex-col sm:flex-row  items-center gap-4 flex-wrap ">
 				{isPending ? (
-					<div className="w-full text-center py-10">
-						<LoaderPinwheel
-							size={32}
-							className="animate-spin mx-auto text-[var(--color-primary)]"
-						/>
-					</div>
+					<LoadingSpinner />
 				) : (
 					productsData?.products?.map((p) => (
 						<ProductCard
