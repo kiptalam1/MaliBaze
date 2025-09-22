@@ -2,7 +2,7 @@ import useFetch from "../../hooks/useFetch";
 import ProductCard from "../cards/ProductCard";
 import LoadingSpinner from "../ui/LoadingSpinner";
 
-interface ProductDataProps {
+export interface ProductDataProps {
 	products: {
 		_id: string;
 		name: string;

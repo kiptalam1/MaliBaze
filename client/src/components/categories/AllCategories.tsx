@@ -2,7 +2,7 @@ import useFetch from "../../hooks/useFetch";
 import ShopByCatCard from "../cards/ShopByCatCard";
 import LoadingSpinner from "../ui/LoadingSpinner";
 
-interface Product {
+export interface Product {
 	_id: string;
 	name: string;
 	price: number;
@@ -35,7 +35,6 @@ const AllCategories = () => {
 			count,
 		})
 	);
-
 	return (
 		<div className="px-4 sm:px-6 md:px-8 lg:px-10 py-4 space-y-6">
 			<div className="flex gap-5 justify-between items-center">

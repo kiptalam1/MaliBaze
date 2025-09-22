@@ -1,39 +1,17 @@
 import { ArrowRight } from "lucide-react";
 import BouncyButton from "../ui/BouncyButton";
 import ProductCard from "../cards/ProductCard";
-import { type ProductCardProps } from "../cards/ProductCard";
+import useFetch from "../../hooks/useFetch";
+import LoadingSpinner from "../ui/LoadingSpinner";
+import { useNavigate } from "react-router-dom";
+import type { ProductDataProps } from "../categories/AllProducts";
 
 const FeaturedProducts = () => {
-	const featuredProducts: ProductCardProps[] = [
-		{
-			imageSrc:
-				"https://images.pexels.com/photos/1649771/pexels-photo-1649771.jpeg",
-			category: "electronics",
-			productName: "wireless headphones",
-			price: 2000,
-		},
-		{
-			imageSrc:
-				"https://images.pexels.com/photos/8532616/pexels-photo-8532616.jpeg",
-			category: "fashion",
-			productName: "premium cotton t-shirt",
-			price: 500,
-		},
-		{
-			imageSrc:
-				"https://images.pexels.com/photos/2779018/pexels-photo-2779018.jpeg",
-			category: "electronics",
-			productName: "smart fitness watch",
-			price: 3500,
-		},
-		{
-			imageSrc:
-				"https://images.pexels.com/photos/1112598/pexels-photo-1112598.jpeg",
-			category: "Home & Garden",
-			productName: "minimalistic desk lamp",
-			price: 6000,
-		},
-	];
+	const navigate = useNavigate();
+	const { data: productsData, isPending } = useFetch<ProductDataProps>(
+		"/api/products",
+		"products"
+	);
 
 	return (
 		<div className="w-full px-4 py:6 sm:py-10 flex flex-col gap-5">
@@ -42,18 +20,24 @@ const FeaturedProducts = () => {
 				Discover our handpicked selection of amazing products
 			</p>
 			<div className="flex flex-col sm:flex-row gap-5 flex-wrap justify-center">
-				{featuredProducts.map((p) => (
-					<ProductCard
-						imageSrc={p.imageSrc}
-						category={p.category}
-						productName={p.productName}
-						price={p.price}
-					/>
-				))}
+				{isPending ? (
+					<LoadingSpinner />
+				) : (
+					productsData?.products
+						.slice(0, 4)
+						.map((p) => (
+							<ProductCard
+								imageUrl={p.imageUrl}
+								category={p.category.name}
+								name={p.name}
+								price={p.price}
+							/>
+						))
+				)}
 			</div>
 			<BouncyButton
 				className="bg-[var(--color-border)] flex items-center gap-2 w-max self-center my-8 hover:bg-[var(--color-bg-card)] transition-colors duration-400"
-				onClick={() => console.log("all products arrow clicked")}>
+				onClick={() => navigate("/categories")}>
 				View All Products <ArrowRight size={18} />
 			</BouncyButton>
 		</div>
