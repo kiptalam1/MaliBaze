@@ -53,7 +53,7 @@ const Navbar = () => {
 	};
 
 	return (
-		<nav className="w-full flex items-center justify-between gap-1 bg-[var(--color-bg-card)] text-[var(--color-text-primary)] p-4">
+		<nav className="w-full flex items-center justify-between gap-6 lg:gap-10 bg-[var(--color-bg-card)] text-[var(--color-text-primary)] p-4">
 			{/* Logo */}
 			<div className="flex items-center gap-2 text-[var(--color-primary)] font-semibold">
 				<Package />
@@ -61,7 +61,7 @@ const Navbar = () => {
 			</div>
 
 			{/* Page links - visible sm and above */}
-			<div className="hidden sm:flex items-center gap-6 text-sm">
+			<div className="hidden sm:flex items-center gap-4 text-sm">
 				<NavLink
 					to="/"
 					className={({ isActive }) =>

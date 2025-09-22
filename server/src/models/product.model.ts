@@ -8,6 +8,7 @@ export interface IProduct extends Document {
 	category: Types.ObjectId;
 	rating?: number | null;
 	sku: string;
+	imageUrl: string;
 }
 
 const ProductSchema = new mongoose.Schema<IProduct>(
@@ -41,6 +42,11 @@ const ProductSchema = new mongoose.Schema<IProduct>(
 			type: String,
 			required: true,
 			unique: true,
+			trim: true,
+		},
+		imageUrl: {
+			type: String,
+			required: true,
 			trim: true,
 		},
 	},

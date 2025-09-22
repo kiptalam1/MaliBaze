@@ -12,6 +12,7 @@ interface CreateProductDTO {
 	price: number;
 	category: string; // category name from request
 	sku?: string;
+	imageUrl: string;
 }
 
 export const createProduct = async (
@@ -19,7 +20,14 @@ export const createProduct = async (
 	res: Response
 ): Promise<Response | void> => {
 	try {
-		const { name: productName, description, price, category, sku } = req.body;
+		const {
+			name: productName,
+			description,
+			price,
+			category,
+			sku,
+			imageUrl,
+		} = req.body;
 
 		// Ensure category exists
 		let categoryDoc: ICategory | null = await findOrCreateCategory(category);
@@ -33,6 +41,7 @@ export const createProduct = async (
 			price,
 			category: categoryDoc._id,
 			sku: sku || generatedSKU,
+			imageUrl,
 		});
 
 		return res.status(201).json({
@@ -119,6 +128,7 @@ interface UpdateProductDTO {
 	price?: number;
 	category?: string;
 	sku?: string;
+	imageUrl?: string;
 }
 
 export const updateProduct = async (
@@ -133,7 +143,7 @@ export const updateProduct = async (
 		}
 
 		// fields to update;
-		const { name, description, price, sku, category } = req.body;
+		const { name, description, price, sku, category, imageUrl } = req.body;
 		const formattedSKU = sku?.replace(/\s+/g, "").toUpperCase();
 		// ensure category exists if provided;
 		let categoryDoc: ICategory | null = null;
@@ -149,6 +159,7 @@ export const updateProduct = async (
 				price,
 				sku: formattedSKU,
 				category: categoryDoc?._id,
+				imageUrl,
 			},
 			{ returnDocument: "after" }
 		).populate("category", "name");

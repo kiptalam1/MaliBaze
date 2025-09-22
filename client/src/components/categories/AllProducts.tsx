@@ -1,36 +1,23 @@
-import ProductCard, { type ProductCardProps } from "../cards/ProductCard";
+import { div } from "motion/react-client";
+import useFetch from "../../hooks/useFetch";
+import ProductCard, { type ProductProps } from "../cards/ProductCard";
+import { LoaderPinwheel } from "lucide-react";
+
+interface ProductDataProps {
+	products: {
+		_id: string;
+		name: string;
+		price: number;
+		category: { name: string };
+		imageUrl: string;
+	}[];
+}
 
 const AllProducts = () => {
-	const featuredProducts: ProductCardProps[] = [
-		{
-			imageSrc:
-				"https://images.pexels.com/photos/1649771/pexels-photo-1649771.jpeg",
-			category: "electronics",
-			productName: "wireless headphones",
-			price: 2000,
-		},
-		{
-			imageSrc:
-				"https://images.pexels.com/photos/8532616/pexels-photo-8532616.jpeg",
-			category: "fashion",
-			productName: "premium cotton t-shirt",
-			price: 500,
-		},
-		{
-			imageSrc:
-				"https://images.pexels.com/photos/2779018/pexels-photo-2779018.jpeg",
-			category: "electronics",
-			productName: "smart fitness watch",
-			price: 3500,
-		},
-		{
-			imageSrc:
-				"https://images.pexels.com/photos/1112598/pexels-photo-1112598.jpeg",
-			category: "Home & Garden",
-			productName: "minimalistic desk lamp",
-			price: 6000,
-		},
-	];
+	const { data: productsData, isPending } = useFetch<ProductDataProps>(
+		"/api/products",
+		"products"
+	);
 
 	return (
 		<div className="px-4 sm:px-6 md:px-8 lg:px-10 py-4 sm:py-6 md:py-8 lg:py-10 space-y-4">
@@ -39,18 +26,29 @@ const AllProducts = () => {
 					All Products
 				</h3>
 				<p className="text-sm py-1 px-3 bg-[var(--color-primary-lightest)] text-[var(--color-primary)] rounded-lg w-max">
-					<span className="mr-1">{featuredProducts.length}</span>products found
+					<span className="mr-1">{productsData?.products.length ?? 0}</span>
+					products found
 				</p>
 			</div>
 			<div className="flex flex-col sm:flex-row  items-center gap-4 flex-wrap ">
-				{featuredProducts.map((p) => (
-					<ProductCard
-						imageSrc={p.imageSrc}
-						category={p.category}
-						productName={p.productName}
-						price={p.price}
-					/>
-				))}
+				{isPending ? (
+					<div className="w-full text-center py-10">
+						<LoaderPinwheel
+							size={32}
+							className="animate-spin mx-auto text-[var(--color-primary)]"
+						/>
+					</div>
+				) : (
+					productsData?.products?.map((p) => (
+						<ProductCard
+							key={p._id}
+							imageUrl={p.imageUrl}
+							category={p.category.name}
+							name={p.name}
+							price={p.price}
+						/>
+					))
+				)}
 			</div>
 		</div>
 	);
