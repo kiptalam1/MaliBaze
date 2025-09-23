@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
+import { AuthContext } from "../../../contexts/AuthContext";
 
 interface UserModalProps {
 	isOpen: boolean;
@@ -8,7 +9,7 @@ interface UserModalProps {
 
 const UserModal = ({ isOpen, onClose, onNavigate }: UserModalProps) => {
 	const modalRef = useRef<HTMLDivElement | null>(null);
-
+	const { user } = useContext(AuthContext)!;
 	useEffect(() => {
 		if (!isOpen) {
 			return;
@@ -55,7 +56,7 @@ const UserModal = ({ isOpen, onClose, onNavigate }: UserModalProps) => {
 							onClose();
 							// small timeout not required here since parent will handle navigation order;
 							// but keep it consistent: parent can close drawer first then navigate if needed.
-							onNavigate("/auth/login");
+							onNavigate(user ? "/" : "/auth/login");
 						}}
 						className="text-left w-full px-3 py-2 rounded hover:bg-[var(--color-bg-card)] transition-colors">
 						Sign In
@@ -65,7 +66,7 @@ const UserModal = ({ isOpen, onClose, onNavigate }: UserModalProps) => {
 						type="button"
 						onClick={() => {
 							onClose();
-							onNavigate("/auth/register");
+							onNavigate(user ? "/" : "/auth/register");
 						}}
 						className="text-left w-full px-3 py-2 rounded hover:bg-[var(--color-bg-card)] transition-colors">
 						Sign Up

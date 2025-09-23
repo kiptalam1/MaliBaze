@@ -27,6 +27,7 @@ const FeaturedProducts = () => {
 						.slice(0, 4)
 						.map((p) => (
 							<ProductCard
+								key={p._id}
 								imageUrl={p.imageUrl}
 								category={p.category.name}
 								name={p.name}
@@ -36,6 +37,7 @@ const FeaturedProducts = () => {
 				)}
 			</div>
 			<BouncyButton
+				type="button"
 				className="bg-[var(--color-border)] flex items-center gap-2 w-max self-center my-8 hover:bg-[var(--color-bg-card)] transition-colors duration-400"
 				onClick={() => navigate("/categories")}>
 				View All Products <ArrowRight size={18} />

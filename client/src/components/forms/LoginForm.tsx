@@ -1,11 +1,35 @@
 import { Package, Eye, EyeOff } from "lucide-react";
 import BouncyButton from "../ui/BouncyButton";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useContext, useState } from "react";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const LoginForm = () => {
 	const navigate = useNavigate();
 	const [showPassword, setShowPassword] = useState<boolean>(false);
+	const location = useLocation();
+	const { login } = useContext(AuthContext)!;
+
+	const [formData, setFormData] = useState({
+		email: "",
+		password: "",
+	});
+
+	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const { name, value } = event.target;
+		setFormData((prev) => ({ ...prev, [name]: value }));
+	};
+
+	const from =
+		(location.state as { from?: { pathname: string } } | null)?.from
+			?.pathname || "/";
+
+	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		await login(formData);
+		navigate(from, { replace: true });
+	};
+
 	return (
 		<div className="flex flex-col gap-5 bg-[var(--color-bg-card)] shadow p-5 w-full max-w-md">
 			<div className="flex flex-col items-center">
@@ -17,7 +41,7 @@ const LoginForm = () => {
 					Sign in to your MaliBaze account
 				</p>
 			</div>
-			<form className="flex flex-col gap-2">
+			<form className="flex flex-col gap-2" onSubmit={handleSubmit}>
 				<div className="flex flex-col gap-0.5">
 					<label htmlFor="email" className="text-sm">
 						Email Address
@@ -25,6 +49,9 @@ const LoginForm = () => {
 					<input
 						id="email"
 						type="email"
+						name="email"
+						value={formData.email}
+						onChange={handleChange}
 						placeholder="Enter your email"
 						className="w-full p-2 border border-[var(--color-border)] rounded-lg outline-none focus:ring-1 focus:ring-[var(--color-primary)]"
 					/>
@@ -38,6 +65,9 @@ const LoginForm = () => {
 						<input
 							id="password"
 							type={showPassword ? "text" : "password"}
+							name="password"
+							value={formData.password}
+							onChange={handleChange}
 							placeholder="Enter your password"
 							className="w-full p-2 pr-10 border border-[var(--color-border)] rounded-lg outline-none focus:ring-1 focus:ring-[var(--color-primary)] "
 						/>
@@ -50,9 +80,7 @@ const LoginForm = () => {
 					</div>
 				</div>
 
-				<BouncyButton
-					className="bg-[var(--color-primary)] mt-5"
-					onClick={() => console.log("create account")}>
+				<BouncyButton type="submit" className="bg-[var(--color-primary)] mt-5">
 					Sign In
 				</BouncyButton>
 			</form>

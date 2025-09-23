@@ -3,14 +3,20 @@ import type { ReactNode } from "react";
 
 interface ButtonProps {
 	children: ReactNode;
-	onClick: () => void;
+	onClick?: () => void;
 	className?: string;
+	type: "button" | "submit" | "reset";
 }
 
-const BouncyButton = ({ children, onClick, className = "" }: ButtonProps) => {
+const BouncyButton = ({
+	children,
+	onClick,
+	className = "",
+	type = "button",
+}: ButtonProps) => {
 	return (
 		<motion.button
-			type="button"
+			type={type}
 			onClick={onClick}
 			whileHover={{ scale: 1.02 }}
 			whileTap={{ scale: 0.95 }}
