@@ -5,6 +5,7 @@ import CategoryPage from "./pages/CategoryPage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import { Toaster } from "sonner";
+import ShoppingCartPage from "./pages/ShoppingCartPage";
 
 function App() {
 	return (
@@ -16,6 +17,7 @@ function App() {
 				<Route path="/categories" element={<CategoryPage />} />
 				<Route path="/auth/register" element={<RegisterPage />} />
 				<Route path="/auth/login" element={<LoginPage />} />
+				<Route path="/cart" element={<ShoppingCartPage />} />
 			</Routes>
 		</div>
 	);

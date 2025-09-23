@@ -216,10 +216,14 @@ export const getUserCart = async (
 			return res.status(401).json({ error: "Access denied. Please login" });
 		}
 
-		const cart = await Cart.findOne({ user: userId }).populate(
-			"products.product",
-			"name price"
-		);
+		const cart = await Cart.findOne({ user: userId }).populate({
+			path: "products.product",
+			select: "name price imageUrl category rating",
+			populate: {
+				path: "category",
+				select: "name",
+			},
+		});
 
 		if (!cart) {
 			return res.status(200).json({
