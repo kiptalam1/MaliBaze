@@ -16,7 +16,6 @@ interface SetupInterceptorsProps {
 export const setupInterceptors = ({
 	logout,
 	refreshAccessToken,
-	getCurrentUser,
 }: SetupInterceptorsProps) => {
 	api.interceptors.request.use(
 		(config) => {
@@ -31,14 +30,12 @@ export const setupInterceptors = ({
 		async (error) => {
 			const originalRequest = error.config;
 
-			if (error.response.status === 401 && !originalRequest._retry) {
+			if (error.response?.status === 401 && !originalRequest._retry) {
 				originalRequest._retry = true;
 
 				try {
 					await refreshAccessToken();
-					if (getCurrentUser) {
-						await getCurrentUser();
-					}
+
 					return api(originalRequest);
 				} catch (error) {
 					toast.error("Session has expired. Please log in again.");

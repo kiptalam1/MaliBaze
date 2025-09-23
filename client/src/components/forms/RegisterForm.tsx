@@ -1,9 +1,48 @@
 import { Package } from "lucide-react";
 import BouncyButton from "../ui/BouncyButton";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { api } from "../../utils/api";
+import type { AxiosError } from "axios";
+import { toast } from "sonner";
 
 const RegisterForm = () => {
 	const navigate = useNavigate();
+	const [formData, setFormData] = useState({
+		name: "",
+		email: "",
+		password: "",
+		confirmPassword: "",
+	});
+
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const { name, value } = e.target;
+		setFormData((prev) => ({ ...prev, [name]: value }));
+	};
+
+	if (formData.password !== formData.confirmPassword) {
+		toast.error("Both passwords must match");
+		return;
+	}
+
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		try {
+			await api.post("/auth/register", {
+				email: formData.email,
+				name: formData.name,
+				password: formData.password,
+			});
+		} catch (error) {
+			const err = error as AxiosError<{ message?: string }>;
+			toast.error(
+				err.response?.data.message ||
+					err.message ||
+					"Sign up failed. Try again later."
+			);
+		}
+	};
+
 	return (
 		<div className="flex flex-col gap-5 bg-[var(--color-bg-card)] shadow p-5 w-full max-w-md">
 			<div className="flex flex-col items-center">
@@ -15,13 +54,17 @@ const RegisterForm = () => {
 					Join MaliBaze and start shopping today
 				</p>
 			</div>
-			<form className="flex flex-col gap-2">
+			<form className="flex flex-col gap-2" onSubmit={handleSubmit}>
 				<div className="flex flex-col gap-0.5">
 					<label htmlFor="username" className="text-sm">
 						Enter your Name
 					</label>
 					<input
 						id="username"
+						type="text"
+						name="name"
+						value={formData.name}
+						onChange={handleChange}
 						placeholder="John Doe"
 						className="w-full p-2 border border-[var(--color-border)] rounded-lg outline-none focus:ring-1 focus:ring-[var(--color-primary)]"
 					/>
@@ -33,6 +76,10 @@ const RegisterForm = () => {
 					</label>
 					<input
 						id="email"
+						type="email"
+						name="email"
+						value={formData.email}
+						onChange={handleChange}
 						placeholder="john@example.com"
 						className="w-full p-2 border border-[var(--color-border)] rounded-lg outline-none focus:ring-1 focus:ring-[var(--color-primary)]"
 					/>
@@ -44,6 +91,10 @@ const RegisterForm = () => {
 					</label>
 					<input
 						id="password"
+						type="text"
+						name="password"
+						value={formData.password}
+						onChange={handleChange}
 						placeholder="create a strong password"
 						className="w-full p-2 border border-[var(--color-border)] rounded-lg outline-none focus:ring-1 focus:ring-[var(--color-primary)]"
 					/>
@@ -55,13 +106,15 @@ const RegisterForm = () => {
 					</label>
 					<input
 						id="confirmPassword"
+						type="text"
+						name="confirmPassword"
+						value={formData.confirmPassword}
+						onChange={handleChange}
 						placeholder="confirm your password"
 						className="w-full p-2 border border-[var(--color-border)] rounded-lg outline-none focus:ring-1 focus:ring-[var(--color-primary)]"
 					/>
 				</div>
-				<BouncyButton
-					className="bg-[var(--color-primary)] mt-5"
-					onClick={() => console.log("create account")}>
+				<BouncyButton type="submit" className="bg-[var(--color-primary)] mt-5">
 					Create Account
 				</BouncyButton>
 			</form>

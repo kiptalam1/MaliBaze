@@ -1,4 +1,4 @@
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import {
 	createContext,
 	useState,
@@ -8,7 +8,7 @@ import {
 	type SetStateAction,
 } from "react";
 import { toast } from "sonner";
-import { setupInterceptors } from "../utils/api";
+import { api, setupInterceptors } from "../utils/api";
 
 export interface User {
 	id: string;
@@ -52,9 +52,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 	const login = async (formData: { email: string; password: string }) => {
 		setLoading(true);
 		try {
-			const response = await axios.post("/api/auth/login", formData, {
-				withCredentials: true,
-			});
+			const response = await api.post("/auth/login", formData, {});
 			setUser(normalizeUser(response.data.user));
 			toast.success(response.data.message || "Logged in successfully");
 		} catch (error) {
@@ -69,9 +67,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 	const getCurrentUser = async () => {
 		setLoading(true);
 		try {
-			const response = await axios.get("/api/users/me", {
-				withCredentials: true,
-			});
+			const response = await api.get("/users/me", {});
 			const normalized = normalizeUser(response.data.user);
 			setUser(normalized);
 			return normalized;
@@ -86,26 +82,19 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 	const refreshAccessToken = async () => {
 		try {
-			await axios.post("/api/auth/refresh", {}, { withCredentials: true });
-			// cookies are rotated automatically by backend
-		} catch (err) {
+			await api.post("/auth/refresh-token");
+		} catch {
 			setUser(null); // logout if refresh fails
-			throw err;
+			throw new Error("Token refresh failed");
 		}
 	};
 
 	const logout = async () => {
 		setLoading(true);
 		try {
-			const response = await axios.post(
-				"/api/auth/logout",
-				{},
-				{
-					withCredentials: true,
-				}
-			);
+			await api.post("/auth/logout");
 			setUser(null);
-			toast.success(response.data.message);
+			toast.success("Logged out successfully");
 		} catch (error) {
 			const err = error as AxiosError<{ message: string }>;
 			toast.error(err.response?.data.message || err.message);
@@ -118,9 +107,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 		getCurrentUser();
 
 		setupInterceptors({
-			logout: logout,
-			refreshAccessToken: refreshAccessToken,
-			getCurrentUser: getCurrentUser,
+			logout,
+			refreshAccessToken,
 		});
 	}, []);
 
