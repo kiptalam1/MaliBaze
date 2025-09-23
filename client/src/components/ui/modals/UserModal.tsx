@@ -1,5 +1,6 @@
 import { useContext, useEffect, useRef } from "react";
 import { AuthContext } from "../../../contexts/AuthContext";
+import { toast } from "sonner";
 
 interface UserModalProps {
 	isOpen: boolean;
@@ -9,7 +10,7 @@ interface UserModalProps {
 
 const UserModal = ({ isOpen, onClose, onNavigate }: UserModalProps) => {
 	const modalRef = useRef<HTMLDivElement | null>(null);
-	const { user } = useContext(AuthContext)!;
+	const { user, logout } = useContext(AuthContext)!;
 	useEffect(() => {
 		if (!isOpen) {
 			return;
@@ -54,11 +55,10 @@ const UserModal = ({ isOpen, onClose, onNavigate }: UserModalProps) => {
 						type="button"
 						onClick={() => {
 							onClose();
-							// small timeout not required here since parent will handle navigation order;
-							// but keep it consistent: parent can close drawer first then navigate if needed.
+
 							onNavigate(user ? "/" : "/auth/login");
 						}}
-						className="text-left w-full px-3 py-2 rounded hover:bg-[var(--color-bg-card)] transition-colors">
+						className="text-left w-full px-3 py-2 rounded hover:bg-[var(--color-bg)] cursor-pointer transition-colors">
 						Sign In
 					</button>
 
@@ -68,7 +68,7 @@ const UserModal = ({ isOpen, onClose, onNavigate }: UserModalProps) => {
 							onClose();
 							onNavigate(user ? "/" : "/auth/register");
 						}}
-						className="text-left w-full px-3 py-2 rounded hover:bg-[var(--color-bg-card)] transition-colors">
+						className="text-left w-full px-3 py-2 rounded hover:bg-[var(--color-bg)] cursor-pointer transition-colors">
 						Sign Up
 					</button>
 
@@ -78,7 +78,7 @@ const UserModal = ({ isOpen, onClose, onNavigate }: UserModalProps) => {
 							onClose();
 							onNavigate("/orders");
 						}}
-						className="text-left w-full px-3 py-2 rounded hover:bg-[var(--color-bg-card)] transition-colors">
+						className="text-left w-full px-3 py-2 rounded hover:bg-[var(--color-bg)] cursor-pointer transition-colors">
 						My Orders
 					</button>
 
@@ -88,8 +88,24 @@ const UserModal = ({ isOpen, onClose, onNavigate }: UserModalProps) => {
 							onClose();
 							onNavigate("/admin");
 						}}
-						className="text-left w-full px-3 py-2 rounded hover:bg-[var(--color-bg-card)] transition-colors">
+						className="text-left w-full px-3 py-2 rounded hover:bg-[var(--color-bg)] cursor-pointer transition-colors">
 						Admin Panel
+					</button>
+
+					<button
+						type="submit"
+						onClick={async () => {
+							try {
+								await logout();
+								onClose();
+								onNavigate("/");
+							} catch (error) {
+								toast.error("Logout failed");
+								console.error(error);
+							}
+						}}
+						className="text-left w-full px-3 py-2 rounded hover:bg-[var(--color-error)] transition-colors">
+						Logout
 					</button>
 				</div>
 
@@ -97,7 +113,7 @@ const UserModal = ({ isOpen, onClose, onNavigate }: UserModalProps) => {
 					type="button"
 					aria-label="Close account modal"
 					onClick={onClose}
-					className="mt-3 text-sm w-full px-3 py-2 rounded bg-[var(--color-bg)] hover:bg-[var(--color-bg-card)] transition-colors">
+					className="mt-3 text-sm w-full px-3 py-2 rounded bg-[var(--color-bg)] hover:bg-[var(--color-bg-card)] cursor-pointer transition-colors">
 					Close
 				</button>
 			</div>

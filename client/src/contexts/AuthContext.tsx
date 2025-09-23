@@ -1,4 +1,3 @@
-import { AxiosError } from "axios";
 import {
 	createContext,
 	useState,
@@ -19,7 +18,10 @@ export interface User {
 
 interface AuthContextType {
 	user: User | null;
-	login: (formData: { email: string; password: string }) => Promise<void>;
+	login: (formData: {
+		email: string;
+		password: string;
+	}) => Promise<boolean | void>;
 	logout: () => Promise<void>;
 	loading: boolean;
 	setLoading: Dispatch<SetStateAction<boolean>>;
@@ -49,16 +51,19 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 	const [user, setUser] = useState<User | null>(null);
 	const [loading, setLoading] = useState<boolean>(false);
 
-	const login = async (formData: { email: string; password: string }) => {
+	const login = async (formData: {
+		email: string;
+		password: string;
+	}): Promise<boolean> => {
 		setLoading(true);
 		try {
 			const response = await api.post("/auth/login", formData, {});
 			setUser(normalizeUser(response.data.user));
 			toast.success(response.data.message || "Logged in successfully");
-		} catch (error) {
-			const err = error as AxiosError<{ message: string }>;
-			toast.error(err.response?.data.message || err.message);
+			return true;
+		} catch {
 			setUser(null);
+			return false;
 		} finally {
 			setLoading(false);
 		}
@@ -71,9 +76,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 			const normalized = normalizeUser(response.data.user);
 			setUser(normalized);
 			return normalized;
-		} catch (error) {
-			const err = error as AxiosError<{ message: string }>;
-			toast.error(err.response?.data.message || err.message);
+		} catch {
 			setUser(null);
 		} finally {
 			setLoading(false);
@@ -85,20 +88,20 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 			await api.post("/auth/refresh-token");
 		} catch {
 			setUser(null); // logout if refresh fails
-			throw new Error("Token refresh failed");
+			// throw new Error("Token refresh failed");
 		}
 	};
 
 	const logout = async () => {
+		if (!user) {
+			return;
+		}
 		setLoading(true);
 		try {
 			await api.post("/auth/logout");
 			setUser(null);
 			toast.success("Logged out successfully");
-		} catch (error) {
-			const err = error as AxiosError<{ message: string }>;
-			toast.error(err.response?.data.message || err.message);
-		} finally {
+		} catch {
 			setLoading(false);
 		}
 	};
@@ -107,7 +110,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 		getCurrentUser();
 
 		setupInterceptors({
-			logout,
 			refreshAccessToken,
 		});
 	}, []);

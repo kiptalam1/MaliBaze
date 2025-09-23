@@ -1,6 +1,6 @@
 import { Package } from "lucide-react";
 import BouncyButton from "../ui/BouncyButton";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { api } from "../../utils/api";
 import type { AxiosError } from "axios";
@@ -8,6 +8,8 @@ import { toast } from "sonner";
 
 const RegisterForm = () => {
 	const navigate = useNavigate();
+	const location = useLocation();
+	const from = (location.state as { from?: string })?.from || "/";
 	const [formData, setFormData] = useState({
 		name: "",
 		email: "",
@@ -20,19 +22,22 @@ const RegisterForm = () => {
 		setFormData((prev) => ({ ...prev, [name]: value }));
 	};
 
-	if (formData.password !== formData.confirmPassword) {
-		toast.error("Both passwords must match");
-		return;
-	}
-
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+
+		if (formData.password !== formData.confirmPassword) {
+			toast.error("Both passwords must match");
+			return;
+		}
+
 		try {
-			await api.post("/auth/register", {
+			const response = await api.post("/auth/signup", {
 				email: formData.email,
 				name: formData.name,
 				password: formData.password,
 			});
+			toast.success(response.data.message || "Account created successfully");
+			navigate(from, { replace: true });
 		} catch (error) {
 			const err = error as AxiosError<{ message?: string }>;
 			toast.error(

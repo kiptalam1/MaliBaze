@@ -9,12 +9,11 @@ export const api = axios.create({
 
 interface SetupInterceptorsProps {
 	refreshAccessToken: () => Promise<void>;
-	logout: () => void;
+	// logout: () => void;
 	getCurrentUser?: () => Promise<User | void>;
 }
 
 export const setupInterceptors = ({
-	logout,
 	refreshAccessToken,
 }: SetupInterceptorsProps) => {
 	api.interceptors.request.use(
@@ -39,10 +38,19 @@ export const setupInterceptors = ({
 					return api(originalRequest);
 				} catch (error) {
 					toast.error("Session has expired. Please log in again.");
-					logout(); // if refresh fails;
+
 					return Promise.reject(error);
 				}
 			}
+
+			const message =
+				error.response?.data.message ||
+				error.response?.data.error ||
+				error.message ||
+				"Unknown error";
+
+			toast.error(message);
+			return Promise.reject(error);
 		}
 	);
 };

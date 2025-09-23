@@ -26,8 +26,10 @@ const LoginForm = () => {
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		await login(formData);
-		navigate(from, { replace: true });
+		const success = await login(formData);
+		if (success) {
+			navigate(from, { replace: true });
+		}
 	};
 
 	return (
