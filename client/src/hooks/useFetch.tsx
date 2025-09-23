@@ -1,14 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import { useEffect } from "react";
 import { toast } from "sonner";
+import { api } from "../utils/api.ts";
 
 const useFetch = <T = unknown,>(url: string, queryKey?: string[]) => {
 	// const queryClient = useQueryClient();
 	const query = useQuery<T, AxiosError>({
-		queryKey: [queryKey || url],
+		queryKey: Array.isArray(queryKey) ? queryKey : [queryKey ?? url],
+
 		queryFn: async () => {
-			const res = await axios.get<T>(url);
+			const res = await api.get<T>(url);
 			return res.data;
 		},
 	});
@@ -16,9 +18,9 @@ const useFetch = <T = unknown,>(url: string, queryKey?: string[]) => {
 	// only fires when state changes, not on every render
 	useEffect(() => {
 		if (query.isError && query.error) {
-			const backendMsg = (query.error.response?.data as { message?: string })
-				.message;
-			toast.error(backendMsg || query.error.message || "Something went wrong");
+			const err = query.error as AxiosError<{ message?: string }>;
+			const backendMsg = err.response?.data?.message;
+			toast.error(backendMsg || err.message || "Something went wrong");
 		}
 	}, [query.isError, query.error]);
 

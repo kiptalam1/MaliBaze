@@ -16,7 +16,7 @@ export interface ProductDataProps {
 const AllProducts = () => {
 	const { productSearch, categoryFilter } = useSearch();
 
-	let url = `/api/products?category=${categoryFilter}`;
+	let url = `/products?category=${categoryFilter}`;
 	if (productSearch?.trim()) {
 		url += `&search=${productSearch}`;
 	}

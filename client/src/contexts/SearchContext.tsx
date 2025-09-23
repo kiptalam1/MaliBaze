@@ -8,9 +8,7 @@ interface SearchContextType {
 	setCategoryFilter: (c: string) => void;
 }
 
-export const SearchContext = createContext<SearchContextType | undefined>(
-	undefined
-);
+const SearchContext = createContext<SearchContextType | undefined>(undefined);
 
 export const SearchProvider = ({ children }: { children: ReactNode }) => {
 	const [productSearch, setProductSearch] = useState("");

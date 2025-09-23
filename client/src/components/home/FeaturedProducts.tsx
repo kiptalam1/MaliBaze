@@ -9,8 +9,8 @@ import type { ProductDataProps } from "../categories/AllProducts";
 const FeaturedProducts = () => {
 	const navigate = useNavigate();
 	const { data: productsData, isPending } = useFetch<ProductDataProps>(
-		"/api/products",
-		"products"
+		"/products",
+		["products"]
 	);
 
 	return (

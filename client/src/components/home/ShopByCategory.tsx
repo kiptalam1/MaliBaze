@@ -6,8 +6,8 @@ import LoadingSpinner from "../ui/LoadingSpinner";
 
 const ShopByCategory = () => {
 	const { data: productsData, isPending } = useFetch<{ products: Product[] }>(
-		"/api/products",
-		"products"
+		"/products",
+		["products"]
 	);
 	const navigate = useNavigate();
 

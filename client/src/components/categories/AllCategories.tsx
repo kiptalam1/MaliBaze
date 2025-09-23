@@ -13,7 +13,7 @@ export interface Product {
 const AllCategories = () => {
 	const { categoryFilter } = useSearch();
 	const { data: productsData, isPending } = useFetch<{ products: Product[] }>(
-		`/api/products?category=${categoryFilter}`,
+		`/products?category=${categoryFilter}`,
 		["products", categoryFilter]
 	);
 
