@@ -1,4 +1,4 @@
-import { Minus, Plus, Trash2 } from "lucide-react";
+import { LoaderCircle, Minus, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 interface ShoppingCardProps {
@@ -7,7 +7,8 @@ interface ShoppingCardProps {
 	name: string;
 	price: number;
 	quantity: number;
-	onRemove?: () => void;
+	onRemove: () => void;
+	loading: boolean;
 }
 
 const ShoppingCard = ({
@@ -17,6 +18,7 @@ const ShoppingCard = ({
 	price,
 	quantity,
 	onRemove,
+	loading,
 }: ShoppingCardProps) => {
 	const [qty, setQty] = useState<number>(quantity);
 
@@ -95,8 +97,13 @@ const ShoppingCard = ({
 						type="button"
 						onClick={onRemove}
 						className="text-red-500 hover:text-red-600"
-						aria-label="remove item">
-						<Trash2 size={18} />
+						aria-label="remove item"
+						disabled={loading}>
+						{loading ? (
+							<LoaderCircle size={16} className="animate-spin" />
+						) : (
+							<Trash2 size={18} />
+						)}
 					</button>
 				</div>
 			</div>

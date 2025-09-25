@@ -2,6 +2,7 @@
 import OrderSummary from "../components/cards/OrderSummary";
 import ShoppingCard from "../components/cards/ShoppingCard";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
+import useDelete from "../hooks/useDelete";
 import useFetch from "../hooks/useFetch";
 
 interface ProductProps {
@@ -36,6 +37,12 @@ const ShoppingCartPage = () => {
 
 	const cart = data?.cart;
 
+	const {
+		mutate: deleteCartItem,
+		isPending: isDeleting,
+		variables: deletingId,
+	} = useDelete<CartProps>("cart/item", ["cart"]);
+
 	return (
 		<div className="min-h-screen w-full flex flex-col gap-5 p-4 sm:p-6">
 			<h1 className="text-lg sm:text-2xl md:text-3xl font-semibold">
@@ -58,6 +65,8 @@ const ShoppingCartPage = () => {
 								price={p.product.price}
 								imageUrl={p.product.imageUrl}
 								quantity={p.quantity}
+								onRemove={() => deleteCartItem(`${p.product._id}`)}
+								loading={isDeleting && deletingId === p._id}
 							/>
 						))
 					)}
