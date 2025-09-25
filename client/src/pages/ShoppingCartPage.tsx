@@ -2,10 +2,11 @@
 import OrderSummary from "../components/cards/OrderSummary";
 import ShoppingCard from "../components/cards/ShoppingCard";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
+import useCartMutation from "../hooks/useCartMutation";
 import useDelete from "../hooks/useDelete";
 import useFetch from "../hooks/useFetch";
 
-interface ProductProps {
+export interface ProductProps {
 	product: {
 		imageUrl: string;
 		category: {
@@ -20,7 +21,7 @@ interface ProductProps {
 	_id: string;
 }
 
-interface CartProps {
+export interface CartProps {
 	products: ProductProps[];
 	totalAmount: number;
 	totalQuantity: number;
@@ -36,6 +37,8 @@ const ShoppingCartPage = () => {
 	const { data, isPending } = useFetch<{ cart: CartProps }>("/cart/", ["cart"]);
 
 	const cart = data?.cart;
+
+	const { increment, decrement } = useCartMutation();
 
 	const {
 		mutate: deleteCartItem,
@@ -65,8 +68,10 @@ const ShoppingCartPage = () => {
 								price={p.product.price}
 								imageUrl={p.product.imageUrl}
 								quantity={p.quantity}
-								onRemove={() => deleteCartItem(`${p.product._id}`)}
-								loading={isDeleting && deletingId === p._id}
+								onRemove={() => deleteCartItem(p.product._id)}
+								loading={isDeleting && deletingId === p.product._id}
+								onIncrease={() => increment.mutate(p.product._id)}
+								onDecrease={() => decrement.mutate(p.product._id)}
 							/>
 						))
 					)}
@@ -74,7 +79,9 @@ const ShoppingCartPage = () => {
 
 				{/* Single order summary */}
 				<div className="w-full sm:w-1/3">
-					<OrderSummary subTotal={cart?.totalAmount ?? 0} tax={0} />
+					{(cart?.products?.length ?? 0) > 0 && (
+						<OrderSummary subTotal={cart?.totalAmount ?? 0} tax={0} />
+					)}
 				</div>
 			</div>
 		</div>

@@ -1,5 +1,5 @@
 import { LoaderCircle, Minus, Plus, Trash2 } from "lucide-react";
-import { useState } from "react";
+
 
 interface ShoppingCardProps {
 	imageUrl: string;
@@ -8,6 +8,8 @@ interface ShoppingCardProps {
 	price: number;
 	quantity: number;
 	onRemove: () => void;
+	onIncrease: () => void;
+	onDecrease: () => void;
 	loading: boolean;
 }
 
@@ -18,18 +20,11 @@ const ShoppingCard = ({
 	price,
 	quantity,
 	onRemove,
+	onIncrease,
+	onDecrease,
 	loading,
 }: ShoppingCardProps) => {
-	const [qty, setQty] = useState<number>(quantity);
-
-	const handleDecrease = () => setQty((q) => Math.max(1, q - 1));
-	const handleIncrease = () => setQty((q) => q + 1);
-	const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const v = Math.max(1, Number(e.target.value || 1));
-		setQty(Number.isNaN(v) ? 1 : v);
-	};
-
-	const subtotal = (price * qty).toFixed(2);
+	const subtotal = (price * quantity).toFixed(2);
 
 	return (
 		<div className="w-full flex flex-col sm:flex-row justify-between gap-2 shadow-lg bg-[var(--color-bg-card)] px-2 py-4 md:p-4 rounded-xl">
@@ -57,7 +52,7 @@ const ShoppingCard = ({
 					<div className="flex items-center gap-3 sm:gap-1 md:gap-2 lg:gap-3 mt-2 sm:mt-0">
 						<button
 							type="button"
-							onClick={handleDecrease}
+							onClick={onDecrease}
 							className="p-1 rounded hover:bg-[var(--color-border)] border-1 border-[var(--color-border)]"
 							aria-label="decrease quantity">
 							<Minus size={16} />
@@ -67,14 +62,14 @@ const ShoppingCard = ({
 							aria-label="quantity"
 							type="number"
 							min={1}
-							value={qty}
-							onChange={handleInput}
+							value={quantity}
+							readOnly
 							className="w-12 text-center rounded-lg border border-[var(--color-border)] outline-none focus:ring focus:ring-[var(--color-primary)]"
 						/>
 
 						<button
 							type="button"
-							onClick={handleIncrease}
+							onClick={onIncrease}
 							className="p-1 rounded hover:bg-[var(--color-border)] border-1 border-[var(--color-border)]"
 							aria-label="increase quantity">
 							<Plus size={16} />
