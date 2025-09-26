@@ -5,6 +5,7 @@ import useFetch from "../../hooks/useFetch";
 import LoadingSpinner from "../ui/LoadingSpinner";
 import { useNavigate } from "react-router-dom";
 import type { ProductDataProps } from "../categories/AllProducts";
+import useCartMutation from "../../hooks/useCartMutation";
 
 const FeaturedProducts = () => {
 	const navigate = useNavigate();
@@ -12,6 +13,8 @@ const FeaturedProducts = () => {
 		"/products",
 		["products"]
 	);
+
+	const { add } = useCartMutation();
 
 	return (
 		<div className="w-full px-4 py:6 sm:py-10 flex flex-col gap-5">
@@ -32,6 +35,7 @@ const FeaturedProducts = () => {
 								category={p.category.name}
 								name={p.name}
 								price={p.price}
+								onAdd={() => add.mutate(p._id)}
 							/>
 						))
 				)}

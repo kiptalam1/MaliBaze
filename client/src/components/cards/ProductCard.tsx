@@ -9,8 +9,15 @@ export interface ProductProps {
 	price: number;
 	category: string;
 	imageUrl: string;
+	onAdd: () => void;
 }
-const ProductCard = ({ imageUrl, category, name, price }: ProductProps) => {
+const ProductCard = ({
+	imageUrl,
+	category,
+	name,
+	price,
+	onAdd,
+}: ProductProps) => {
 	return (
 		<div className="w-full sm:w-[300px] lg:w-[350px] h-[350px] rounded-lg shadow-md flex flex-col gap-4 text:sm bg-[var(--color-bg-card)]">
 			<div className="w-full h-[200px]">
@@ -29,7 +36,7 @@ const ProductCard = ({ imageUrl, category, name, price }: ProductProps) => {
 				<BouncyButton
 					type="submit"
 					className="bg-[var(--color-primary)] mr-5 flex items-center gap-2 text-xs"
-					onClick={() => console.log("add to cart")}>
+					onClick={onAdd}>
 					Add To Cart
 					<ShoppingCart size={16} />
 				</BouncyButton>

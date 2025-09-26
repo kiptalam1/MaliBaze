@@ -1,4 +1,5 @@
 import { useSearch } from "../../contexts/SearchContext";
+import useCartMutation from "../../hooks/useCartMutation";
 import useFetch from "../../hooks/useFetch";
 import ProductCard from "../cards/ProductCard";
 import LoadingSpinner from "../ui/LoadingSpinner";
@@ -27,6 +28,8 @@ const AllProducts = () => {
 		productSearch,
 	]);
 
+	const { add } = useCartMutation();
+
 	return (
 		<div className="px-4 sm:px-6 md:px-8 lg:px-10 py-4 sm:py-6 md:py-8 lg:py-10 space-y-4">
 			<div>
@@ -49,6 +52,7 @@ const AllProducts = () => {
 							category={p.category.name}
 							name={p.name}
 							price={p.price}
+							onAdd={() => add.mutate(p._id)}
 						/>
 					))
 				)}

@@ -6,18 +6,18 @@ import Product from "../models/product.model.js";
 import Cart, { type ICartProduct } from "../models/cart.model.js";
 
 export const addProductToCart = async (
-	req: Request<{ id: string }, {}, { quantity?: string }> &
-		AuthenticatedRequest,
+	req: Request<{ id: string }> & AuthenticatedRequest,
 	res: Response
 ): Promise<Response | void> => {
 	try {
 		const userId = req.user?.userId;
 		const { id: productId } = req.params;
-		const quantity = Number(req.body.quantity) || 1;
+		const quantityToAdd = 1; // always add 1 by default
 
 		if (!userId) {
 			return res.status(400).json({ error: "Please login" });
 		}
+
 		if (!productId) {
 			return res.status(400).json({ error: "Product ID is required" });
 		}
@@ -25,51 +25,103 @@ export const addProductToCart = async (
 		if (!mongoose.Types.ObjectId.isValid(productId)) {
 			return res.status(400).json({ error: "Invalid product ID" });
 		}
-		// check if product exists;
-		const product = await Product.findById(productId).select("_id name");
+
+		const product = await Product.findById(productId).select("_id name price");
+
 		if (!product) {
 			return res.status(404).json({ error: "This product no longer exists" });
 		}
 
-		// find user's cart or create one;
-		let cart = await Cart.findOne({
-			user: userId,
+		let cart = await Cart.findOne({ user: userId }).populate({
+			path: "products.product",
+			select: "_id name price",
 		});
+
 		if (!cart) {
-			cart = await Cart.create({
-				user: userId,
-				products: [],
-			});
+			cart = await Cart.create({ user: userId, products: [] });
 		}
-		// find if the index of the product in the cart;
-		const productIndex = cart.products.findIndex(
-			(item) => item.product.toString() === productId
-		);
-		// if this product is in cart, then increase the quantity;
+
+		// Remove invalid products
+		cart.products = cart.products.filter(function (item) {
+			return (
+				item !== undefined &&
+				item.product !== undefined &&
+				item.product !== null
+			);
+		});
+
+		const productIndex = cart.products.findIndex(function (item) {
+			const prodId =
+				item.product instanceof mongoose.Types.ObjectId
+					? item.product.toString()
+					: (item.product as any)?._id?.toString();
+			return prodId === productId;
+		});
+
 		if (productIndex > -1) {
 			const cartProduct = cart.products[productIndex];
-			if (cartProduct) {
-				cartProduct.quantity += quantity;
+			if (cartProduct !== undefined && cartProduct.product !== undefined) {
+				cartProduct.quantity = (cartProduct.quantity ?? 0) + quantityToAdd;
+			} else {
+				// fallback in case product is invalid
+				cart.products.push({
+					product: product._id,
+					quantity: quantityToAdd,
+				} as ICartProduct);
 			}
 		} else {
-			// if this product is not in the cart, add it as  new product;
+			// first time adding product, quantity defaults to 1
 			cart.products.push({
 				product: product._id,
-				quantity,
+				quantity: quantityToAdd,
 			} as ICartProduct);
 		}
-		// save the updated cart;
+
 		await cart.save();
+
+		// Re-fetch populated cart
+		cart = await Cart.findOne({ user: userId }).populate({
+			path: "products.product",
+			select: "_id name price",
+		});
+
+		if (!cart) {
+			return res.status(500).json({ error: "Cart not found after update" });
+		}
+
+		// Filter invalid products again after re-fetch
+		cart.products = cart.products.filter(function (item) {
+			return (
+				item !== undefined &&
+				item.product !== undefined &&
+				item.product !== null
+			);
+		});
+
+		const totalQuantity = cart.products.reduce(function (sum, item) {
+			return sum + (item.quantity ?? 0);
+		}, 0);
+
+		const totalAmount = cart.products.reduce(function (sum, item) {
+			const price = (item.product as any)?.price ?? 0;
+			return sum + (item.quantity ?? 0) * price;
+		}, 0);
 
 		return res.status(200).json({
 			message: "Product added to cart",
-			cart,
+			cart: {
+				...cart.toObject(),
+				totalQuantity,
+				totalAmount,
+			},
 		});
 	} catch (error) {
 		console.error("Error adding product to cart", (error as Error).message);
 		return res.status(500).json({ error: "Internal server error" });
 	}
 };
+
+
 
 export const removeProductFromCart = async (
 	req: Request<{ id: string }> & AuthenticatedRequest,
