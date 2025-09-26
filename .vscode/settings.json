@@ -1,6 +1,9 @@
 {
-  "cSpell.words": [
-    "Baze",
-    "Horizonal"
-  ]
+	"cSpell.words": ["Baze", "Horizonal"],
+	"mdb.presetConnections": [
+		{
+			"name": "Preset Connection",
+			"connectionString": "mongodb://localhost:27017"
+		}
+	]
 }
