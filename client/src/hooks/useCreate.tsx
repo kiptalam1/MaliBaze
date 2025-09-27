@@ -11,7 +11,7 @@ type CreateProps = {
 		category: string;
 		sku?: string;
 		price: number;
-		image: string;
+		imageUrl: string;
 	};
 };
 
@@ -34,7 +34,7 @@ const useCreate = () => {
 			);
 		},
 		onSuccess: () => {
-			toast("Product created successfully");
+			toast.success("Product created successfully");
 			queryClient.invalidateQueries({ queryKey: ["products"] });
 		},
 	});
