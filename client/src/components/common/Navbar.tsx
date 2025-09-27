@@ -1,5 +1,4 @@
 import {
-	Heart,
 	Moon,
 	Package,
 	Search,
@@ -11,8 +10,6 @@ import {
 	X,
 	House,
 	ChartBarStacked,
-	Handshake,
-	Store,
 } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
@@ -83,24 +80,6 @@ const Navbar = () => {
 					}>
 					Categories
 				</NavLink>
-				<NavLink
-					to="/deals"
-					className={({ isActive }) =>
-						isActive
-							? "text-base text-[var(--color-primary)] font-semibold"
-							: "text-[var(--color-text-primary)]"
-					}>
-					Deals
-				</NavLink>
-				<NavLink
-					to="/about"
-					className={({ isActive }) =>
-						isActive
-							? "text-base text-[var(--color-primary)] font-semibold"
-							: "text-[var(--color-text-primary)]"
-					}>
-					About
-				</NavLink>
 			</div>
 
 			{/* Search - always visible */}
@@ -146,9 +125,7 @@ const Navbar = () => {
 						<Moon className="text-indigo-400" size={18} />
 					)}
 				</button>
-				<NavLink to="/wishlist" className="hover:text-[var(--color-primary)]">
-					<Heart size={18} />
-				</NavLink>
+
 				<NavLink
 					to={user ? "/cart" : "/auth/login"}
 					className="hover:text-[var(--color-primary)]">
@@ -194,18 +171,6 @@ const Navbar = () => {
 							className="flex gap-3 items-center">
 							<ChartBarStacked size={18} /> Categories
 						</NavLink>
-						<NavLink
-							to="/deals"
-							onClick={() => setMenuOpen(false)}
-							className="flex gap-3 items-center">
-							<Handshake size={18} /> Deals
-						</NavLink>
-						<NavLink
-							to="/about"
-							onClick={() => setMenuOpen(false)}
-							className="flex gap-3 items-center">
-							<Store size={18} /> About
-						</NavLink>
 
 						<div className="mt-6 flex flex-col gap-4">
 							<button
@@ -214,12 +179,7 @@ const Navbar = () => {
 								className="flex gap-3 items-center">
 								{darkMode ? <Sun size={18} /> : <Moon size={18} />} Dark Mode
 							</button>
-							<NavLink
-								to="/wishlist"
-								onClick={() => setMenuOpen(false)}
-								className="flex gap-3 items-center">
-								<Heart size={18} /> Wishlist
-							</NavLink>
+
 							<NavLink
 								to={user ? "/cart" : "/auth/login"}
 								onClick={() => setMenuOpen(false)}
@@ -246,12 +206,7 @@ const Navbar = () => {
 							className="flex gap-3 items-center">
 							{darkMode ? <Sun size={18} /> : <Moon size={18} />} Dark Mode
 						</button>
-						<NavLink
-							to="/wishlist"
-							onClick={() => setMenuOpen(false)}
-							className="flex gap-3 items-center">
-							<Heart size={18} /> Wishlist
-						</NavLink>
+
 						<NavLink
 							to="/cart"
 							onClick={() => setMenuOpen(false)}
