@@ -1,10 +1,14 @@
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useSearch } from "../../contexts/SearchContext";
 import useCartMutation from "../../hooks/useCartMutation";
 import useFetch from "../../hooks/useFetch";
 import ProductCard from "../cards/ProductCard";
 import LoadingSpinner from "../ui/LoadingSpinner";
+import { useState } from "react";
 
 export interface ProductDataProps {
+	page: number;
+	totalPages: number;
 	products: {
 		_id: string;
 		name: string;
@@ -16,8 +20,8 @@ export interface ProductDataProps {
 
 const AllProducts = () => {
 	const { productSearch, categoryFilter } = useSearch();
-
-	let url = `/products?category=${categoryFilter}`;
+	const [page, setPage] = useState(1);
+	let url = `/products?page=${page}&category=${categoryFilter}`;
 	if (productSearch?.trim()) {
 		url += `&search=${productSearch}`;
 	}
@@ -26,6 +30,7 @@ const AllProducts = () => {
 		"products",
 		categoryFilter,
 		productSearch,
+		String(page),
 	]);
 
 	const { add } = useCartMutation();
@@ -57,6 +62,44 @@ const AllProducts = () => {
 					))
 				)}
 			</div>
+
+			{productsData && productsData.totalPages > 1 && (
+				<div className="flex items-center justify-center gap-2 mt-8">
+					<button
+						type="button"
+						aria-label="previous products button"
+						onClick={() => setPage((p) => Math.max(p - 1, 1))}
+						disabled={page <= 1}>
+						<ChevronLeft
+							size={30}
+							className={`border border-[var(--color-border)] rounded-md p-1 transition-colors duration-200 cursor-pointer ${
+								page <= 1
+									? "opacity-50 cursor-not-allowed"
+									: "hover:bg-[var(--color-border)]"
+							}`}
+						/>
+					</button>
+					<span className="text-sm text-[var(--color-text-secondary)]">
+						{productsData?.page} / {productsData?.totalPages}
+					</span>
+					<button
+						type="button"
+						aria-label="next products button"
+						onClick={() =>
+							setPage((p) => Math.min(p + 1, productsData.totalPages))
+						}
+						disabled={page >= productsData.totalPages}>
+						<ChevronRight
+							size={30}
+							className={`border border-[var(--color-border)] rounded-md p-1 transition-colors duration-200 cursor-pointer ${
+								page >= productsData.totalPages
+									? "opacity-50 cursor-not-allowed"
+									: "hover:bg-[var(--color-border)]"
+							}`}
+						/>
+					</button>
+				</div>
+			)}
 		</div>
 	);
 };
