@@ -82,15 +82,17 @@ const UserModal = ({ isOpen, onClose, onNavigate }: UserModalProps) => {
 						My Orders
 					</button>
 
-					<button
-						type="button"
-						onClick={() => {
-							onClose();
-							onNavigate("/admin");
-						}}
-						className="text-left w-full px-3 py-2 rounded hover:bg-[var(--color-bg)] cursor-pointer transition-colors">
-						Admin Panel
-					</button>
+					{user?.role === "admin" && (
+						<button
+							type="button"
+							onClick={() => {
+								onClose();
+								onNavigate("/admin");
+							}}
+							className="text-left w-full px-3 py-2 rounded hover:bg-[var(--color-bg)] cursor-pointer transition-colors">
+							Admin Panel
+						</button>
+					)}
 
 					<button
 						type="submit"
