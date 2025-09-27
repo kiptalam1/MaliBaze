@@ -14,10 +14,11 @@ import {
 	Handshake,
 	Store,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import UserModal from "../ui/modals/UserModal";
 import { useSearch } from "../../contexts/SearchContext";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const Navbar = () => {
 	const [darkMode, setDarkMode] = useState<boolean>(false);
@@ -25,6 +26,7 @@ const Navbar = () => {
 	const [menuOpen, setMenuOpen] = useState<boolean>(false);
 	const [isUserModalOpen, setIsUserModalOpen] = useState<boolean>(false);
 	const { productSearch, setProductSearch } = useSearch();
+	const { user } = useContext(AuthContext)!;
 	const navigate = useNavigate();
 
 	// toggle dark mode class
@@ -147,7 +149,9 @@ const Navbar = () => {
 				<NavLink to="/wishlist" className="hover:text-[var(--color-primary)]">
 					<Heart size={18} />
 				</NavLink>
-				<NavLink to="/cart" className="hover:text-[var(--color-primary)]">
+				<NavLink
+					to={user ? "/cart" : "/auth/login"}
+					className="hover:text-[var(--color-primary)]">
 					<ShoppingCart size={18} />
 				</NavLink>
 				<button
@@ -217,7 +221,7 @@ const Navbar = () => {
 								<Heart size={18} /> Wishlist
 							</NavLink>
 							<NavLink
-								to="/cart"
+								to={user ? "/cart" : "/auth/login"}
 								onClick={() => setMenuOpen(false)}
 								className="flex gap-3 items-center">
 								<ShoppingCart size={18} /> Cart

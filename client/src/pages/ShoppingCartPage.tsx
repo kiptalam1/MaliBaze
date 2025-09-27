@@ -60,20 +60,26 @@ const ShoppingCartPage = () => {
 					{isPending ? (
 						<LoadingSpinner />
 					) : (
-						cart?.products?.map((p) => (
-							<ShoppingCard
-								key={p._id}
-								category={p.product.category.name}
-								name={p.product.name}
-								price={p.product.price}
-								imageUrl={p.product.imageUrl}
-								quantity={p.quantity}
-								onRemove={() => deleteCartItem(p.product._id)}
-								loading={isDeleting && deletingId === p.product._id}
-								onIncrease={() => increment.mutate(p.product._id)}
-								onDecrease={() => decrement.mutate(p.product._id)}
-							/>
-						))
+						cart?.products?.map((p) => {
+							if (!p.product) {
+								return null;
+							}
+
+							return (
+								<ShoppingCard
+									key={p._id}
+									category={p.product.category.name}
+									name={p.product.name}
+									price={p.product.price}
+									imageUrl={p.product.imageUrl}
+									quantity={p.quantity}
+									onRemove={() => deleteCartItem(p.product._id)}
+									loading={isDeleting && deletingId === p.product._id}
+									onIncrease={() => increment.mutate(p.product._id)}
+									onDecrease={() => decrement.mutate(p.product._id)}
+								/>
+							);
+						})
 					)}
 				</div>
 
