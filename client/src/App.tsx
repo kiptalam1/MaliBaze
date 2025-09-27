@@ -6,6 +6,7 @@ import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import { Toaster } from "sonner";
 import ShoppingCartPage from "./pages/ShoppingCartPage";
+import AdminDashboard from "./pages/AdminDashboard";
 
 function App() {
 	return (
@@ -18,6 +19,7 @@ function App() {
 				<Route path="/auth/register" element={<RegisterPage />} />
 				<Route path="/auth/login" element={<LoginPage />} />
 				<Route path="/cart" element={<ShoppingCartPage />} />
+				<Route path="/admin" element={<AdminDashboard />} />
 			</Routes>
 		</div>
 	);
