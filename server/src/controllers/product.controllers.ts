@@ -121,6 +121,33 @@ export const getAllProducts = async (
 	}
 };
 
+export const getSingleProduct = async (
+	req: Request<{ id: string }>,
+	res: Response
+) => {
+	const { id } = req.params;
+	if (!mongoose.Types.ObjectId.isValid(id)) {
+		return res.status(400).json({ error: "Invalid product ID" });
+	}
+
+	try {
+		const product = await Product.findById(id)
+			.populate("category", "name")
+			.select("-__v -updatedAt");
+		if (!product) {
+			return res.status(404).json({ error: "Product not found" });
+		}
+
+		return res.status(200).json({
+			product,
+		});
+	} catch (error) {
+		console.error("Error fetching product", (error as Error).message);
+		return res.status(500).json({ error: "Internal server error" });
+	}
+};
+
+
 interface UpdateProductDTO {
 	// id: string;
 	name?: string;

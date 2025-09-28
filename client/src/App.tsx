@@ -9,6 +9,7 @@ import ShoppingCartPage from "./pages/ShoppingCartPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import CreateNewProduct from "./pages/CreateNewProduct";
 import AdminProducts from "./subpages/AdminProducts";
+import UpdateProduct from "./pages/UpdateProduct";
 
 function App() {
 	return (
@@ -28,6 +29,10 @@ function App() {
 					<Route path="orders" element={<AdminOrders />} /> */}
 				</Route>
 				<Route path="/admin/products/new" element={<CreateNewProduct />} />
+				<Route
+					path={`/admin/products/:id/update`}
+					element={<UpdateProduct />}
+				/>
 			</Routes>
 		</div>
 	);

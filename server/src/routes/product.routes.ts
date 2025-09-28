@@ -9,6 +9,7 @@ import {
 	createProduct,
 	deleteProduct,
 	getAllProducts,
+	getSingleProduct,
 	updateProduct,
 } from "../controllers/product.controllers.js";
 
@@ -24,6 +25,7 @@ router.post(
 );
 // all users/visitors can browse the products;
 router.get("/", getAllProducts);
+router.get("/:id", getSingleProduct);
 router.patch(
 	"/:id",
 	authenticateUser,

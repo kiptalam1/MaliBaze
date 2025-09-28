@@ -94,7 +94,10 @@ const AdminProducts = () => {
 									<td className="px-3 py-2 flex gap-3 items-center justify-around">
 										<button
 											type="button"
-											className="hover:opacity-80"
+											onClick={() =>
+												navigate(`/admin/products/${p._id}/update`)
+											}
+											className="hover:opacity-80 cursor-pointer"
 											aria-label="Edit product">
 											<Edit
 												size={20}
@@ -105,7 +108,7 @@ const AdminProducts = () => {
 										<button
 											type="button"
 											onClick={() => deleteProduct(p._id)}
-											className="hover:opacity-80"
+											className="hover:opacity-80 cursor-pointer"
 											aria-label="Delete product">
 											{isDeleting && deletingId === p._id ? (
 												<LoaderCircle
