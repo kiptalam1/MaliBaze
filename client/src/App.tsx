@@ -8,6 +8,7 @@ import { Toaster } from "sonner";
 import ShoppingCartPage from "./pages/ShoppingCartPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import CreateNewProduct from "./pages/CreateNewProduct";
+import AdminProducts from "./subpages/AdminProducts";
 
 function App() {
 	return (
@@ -20,7 +21,12 @@ function App() {
 				<Route path="/auth/register" element={<RegisterPage />} />
 				<Route path="/auth/login" element={<LoginPage />} />
 				<Route path="/cart" element={<ShoppingCartPage />} />
-				<Route path="/admin" element={<AdminDashboard />} />
+				<Route path="/admin" element={<AdminDashboard />}>
+					<Route path="products" element={<AdminProducts />} />
+					{/* <Route path="overview" element={<AdminOverview />} />
+				
+					<Route path="orders" element={<AdminOrders />} /> */}
+				</Route>
 				<Route path="/admin/products/new" element={<CreateNewProduct />} />
 			</Routes>
 		</div>
