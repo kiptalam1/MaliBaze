@@ -34,7 +34,7 @@ export interface CartProps {
 }
 
 const ShoppingCartPage = () => {
-	const { data, isPending } = useFetch<{ cart: CartProps }>("/cart/", ["cart"]);
+	const { data, isPending } = useFetch<{ cart: CartProps }>("/cart", ["cart"]);
 
 	const cart = data?.cart;
 
@@ -68,7 +68,7 @@ const ShoppingCartPage = () => {
 							return (
 								<ShoppingCard
 									key={p._id}
-									category={p.product.category.name}
+									category={p.product.category?.name}
 									name={p.product.name}
 									price={p.product.price}
 									imageUrl={p.product.imageUrl}
