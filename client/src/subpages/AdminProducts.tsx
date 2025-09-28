@@ -1,10 +1,18 @@
-import { ChevronLeft, ChevronRight, Edit, Plus, Trash2 } from "lucide-react";
+import {
+	ChevronLeft,
+	ChevronRight,
+	Edit,
+	LoaderCircle,
+	Plus,
+	Trash2,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
 import type { ProductDataProps } from "../components/categories/AllProducts";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import { useState } from "react";
 import { useSearch } from "../contexts/SearchContext";
+import useDelete from "../hooks/useDelete";
 
 const AdminProducts = () => {
 	const navigate = useNavigate();
@@ -14,6 +22,12 @@ const AdminProducts = () => {
 		`/products?search=${productSearch}&page=${page}`,
 		["products", productSearch, String(page)]
 	);
+
+	const {
+		mutate: deleteProduct,
+		isPending: isDeleting,
+		variables: deletingId,
+	} = useDelete("/products", ["products"]);
 
 	return (
 		<div className="flex flex-col bg-[var(--color-bg-card)] rounded-lg px-4 sm:px-6 md:px-8 py-6 sm:py-8 gap-5">
@@ -87,11 +101,23 @@ const AdminProducts = () => {
 												className="text-[var(--color-secondary)]"
 											/>
 										</button>
+
 										<button
 											type="button"
+											onClick={() => deleteProduct(p._id)}
 											className="hover:opacity-80"
 											aria-label="Delete product">
-											<Trash2 size={20} className="text-[var(--color-error)]" />
+											{isDeleting && deletingId === p._id ? (
+												<LoaderCircle
+													size={18}
+													className="text-[var(--color-error)] animate-spin"
+												/>
+											) : (
+												<Trash2
+													size={20}
+													className="text-[var(--color-error)]"
+												/>
+											)}
 										</button>
 									</td>
 								</tr>
