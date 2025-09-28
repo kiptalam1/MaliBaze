@@ -37,7 +37,7 @@ const AdminProducts = () => {
 							<th className="px-3 py-2">Product</th>
 							<th className="hidden sm:table-cell px-3 py-2">Category</th>
 							<th className="px-3 py-2 text-right">Price</th>
-							<th className="px-3 py-2">Actions</th>
+							<th className="px-3 py-2 text-center">Actions</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -64,7 +64,7 @@ const AdminProducts = () => {
 								<tr
 									key={p._id}
 									className="border-b border-[var(--color-border)] text-sm">
-									<td className="px-3 py-2 flex items-center gap-4">
+									<td className="px-3 py-2 flex items-center gap-4 truncate">
 										<img
 											src={p.imageUrl}
 											alt={p.name}
