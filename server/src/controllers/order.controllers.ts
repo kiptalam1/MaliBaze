@@ -91,7 +91,7 @@ export const getMyOrders = async (
 		}
 
 		const orders = await Order.find({ user: userId })
-			.populate("items.product", "name price")
+			.populate("items.product", "name price imageUrl")
 			.lean();
 
 		return res.status(200).json({ orders });
@@ -108,7 +108,7 @@ export const getAllOrders = async (
 	try {
 		const orders = await Order.find()
 			.populate("user", "username email")
-			.populate("items.product", "name price")
+			.populate("items.product", "name price imageUrl")
 			.lean();
 
 		return res.status(200).json({ orders });

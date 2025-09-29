@@ -11,6 +11,7 @@ import CreateNewProduct from "./pages/CreateNewProduct";
 import AdminProducts from "./subpages/AdminProducts";
 import UpdateProduct from "./pages/UpdateProduct";
 import AdminOverview from "./subpages/AdminOverview";
+import UserOrdersPage from "./pages/UserOrdersPage";
 
 function App() {
 	return (
@@ -34,6 +35,7 @@ function App() {
 					path={`/admin/products/:id/update`}
 					element={<UpdateProduct />}
 				/>
+				<Route path="/orders" element={<UserOrdersPage />} />
 			</Routes>
 		</div>
 	);
