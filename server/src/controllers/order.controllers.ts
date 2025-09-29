@@ -78,3 +78,42 @@ export const placeOrder = async (
 		return res.status(500).json({ error: "Internal server error" });
 	}
 };
+
+
+export const getMyOrders = async (
+	req: Request & AuthenticatedRequest,
+	res: Response
+): Promise<Response | void> => {
+	try {
+		const userId = req.user?.userId;
+		if (!mongoose.Types.ObjectId.isValid(String(userId))) {
+			return res.status(400).json({ error: "Invalid user ID" });
+		}
+
+		const orders = await Order.find({ user: userId })
+			.populate("items.product", "name price")
+			.lean();
+
+		return res.status(200).json({ orders });
+	} catch (error) {
+		console.error("Error getting my orders:", (error as Error).message);
+		return res.status(500).json({ error: "Internal server error" });
+	}
+};
+
+export const getAllOrders = async (
+	_req: Request & AuthenticatedRequest,
+	res: Response
+): Promise<Response | void> => {
+	try {
+		const orders = await Order.find()
+			.populate("user", "username email")
+			.populate("items.product", "name price")
+			.lean();
+
+		return res.status(200).json({ orders });
+	} catch (error) {
+		console.error("Error getting all orders:", (error as Error).message);
+		return res.status(500).json({ error: "Internal server error" });
+	}
+};
