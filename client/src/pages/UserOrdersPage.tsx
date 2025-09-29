@@ -50,8 +50,8 @@ const UserOrdersPage = () => {
 	]);
 
 	return (
-		<div className="w-full h-full flex flex-col gap-5 px-4 py-6 sm:px-8 md:px-10 sm:py-8">
-			<div className="w-full flex flex-col gap-5 sm:flex-row justify-between">
+		<div className="w-full h-full flex flex-col gap-5 px-4 py-6 sm:px-8 md:px-10 sm:py-8 items-center">
+			<div className="w-full flex flex-col gap-5 sm:flex-row justify-around">
 				<div>
 					<h1 className="text-2xl md:text-3xl font-semibold">My Orders</h1>
 					<p className="text-[var(--color-text-secondary)] text-base">

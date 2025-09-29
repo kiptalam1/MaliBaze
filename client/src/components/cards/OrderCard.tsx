@@ -72,7 +72,7 @@ const OrderCard = ({
 	const { text, bg, icon } = statusStyles[status];
 	const formattedDate = new Date(createdAt).toISOString().split("T")[0]; //
 	return (
-		<div className="w-full lg:max-w-1/2 flex flex-col px-4 py-6 bg-[var(--color-bg-card)] shadow-sm gap-3 rounded-lg">
+		<div className="w-full md:max-w-3/4 flex flex-col px-4 py-6 bg-[var(--color-bg-card)] shadow-sm gap-3 rounded-lg">
 			<div className="flex items-center gap-5 justify-between">
 				<div>
 					<h2 className="text-lg font-semibold">{orderNumber}</h2>
