@@ -28,7 +28,9 @@ const AdminDashboard = () => {
 				<NavLink
 					to="overview"
 					className={({ isActive }) =>
-						isActive ? "shadow-lg rounded-lg" : ""
+						isActive
+							? "border-b border-[var(--color-accent)] rounded-lg py-1 px-2"
+							: ""
 					}>
 					Overview
 				</NavLink>
