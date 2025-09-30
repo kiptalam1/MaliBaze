@@ -107,9 +107,10 @@ export const getAllOrders = async (
 ): Promise<Response | void> => {
 	try {
 		const orders = await Order.find()
-			.populate("user", "username email")
+			.populate("user", "name email")
 			.populate("items.product", "name price imageUrl")
-			.lean();
+			.lean()
+			.sort({ createdAt: -1 });
 
 		return res.status(200).json({ orders });
 	} catch (error) {

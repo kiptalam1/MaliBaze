@@ -24,7 +24,7 @@ const AdminDashboard = () => {
 					Add Product
 				</button>
 			</div>
-			<div className="flex items-center gap-5 text-sm w-full sm:w-fit bg-[var(--color-bg-card)] justify-center py-2 px-6">
+			<div className="flex items-center gap-5 text-sm w-full sm:w-fit bg-[var(--color-bg-card)] justify-center py-2 px-6 rounded-lg">
 				<NavLink
 					to="overview"
 					className={({ isActive }) =>
@@ -46,7 +46,9 @@ const AdminDashboard = () => {
 				<NavLink
 					to="orders"
 					className={({ isActive }) =>
-						isActive ? "shadow-lg rounded-lg" : ""
+						isActive
+							? "border-b border-[var(--color-accent)] rounded-lg py-1 px-2"
+							: ""
 					}>
 					Orders
 				</NavLink>

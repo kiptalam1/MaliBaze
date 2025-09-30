@@ -177,7 +177,8 @@ const Navbar = () => {
 								type="button"
 								onClick={() => setDarkMode(!darkMode)}
 								className="flex gap-3 items-center">
-								{darkMode ? <Sun size={18} /> : <Moon size={18} />} Dark Mode
+								{darkMode ? <Sun size={18} /> : <Moon size={18} />}{" "}
+								{darkMode ? "Light" : "Dark"}
 							</button>
 
 							<NavLink

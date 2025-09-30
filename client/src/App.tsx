@@ -12,6 +12,7 @@ import AdminProducts from "./subpages/AdminProducts";
 import UpdateProduct from "./pages/UpdateProduct";
 import AdminOverview from "./subpages/AdminOverview";
 import UserOrdersPage from "./pages/UserOrdersPage";
+import AdminOrders from "./subpages/AdminOrders";
 
 function App() {
 	return (
@@ -25,10 +26,10 @@ function App() {
 				<Route path="/auth/login" element={<LoginPage />} />
 				<Route path="/cart" element={<ShoppingCartPage />} />
 				<Route path="/admin" element={<AdminDashboard />}>
+					<Route index element={<AdminOverview />} />
 					<Route path="products" element={<AdminProducts />} />
 					<Route path="overview" element={<AdminOverview />} />
-
-					{/*	<Route path="orders" element={<AdminOrders />} /> */}
+					<Route path="orders" element={<AdminOrders />} />
 				</Route>
 				<Route path="/admin/products/new" element={<CreateNewProduct />} />
 				<Route

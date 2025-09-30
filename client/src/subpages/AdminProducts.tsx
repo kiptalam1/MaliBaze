@@ -14,6 +14,9 @@ import { useState } from "react";
 import { useSearch } from "../contexts/SearchContext";
 import useDelete from "../hooks/useDelete";
 
+
+
+
 const AdminProducts = () => {
 	const navigate = useNavigate();
 	const { productSearch } = useSearch();
