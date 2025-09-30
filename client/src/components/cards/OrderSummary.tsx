@@ -1,3 +1,5 @@
+import { useState } from "react";
+import OrderInfoForm from "../forms/OrderInfoForm";
 import BouncyButton from "../ui/BouncyButton";
 
 const OrderSummary = ({
@@ -7,9 +9,12 @@ const OrderSummary = ({
 	subTotal: number;
 	tax: number;
 }) => {
+	const [isShowing, setIsShowing] = useState(false);
 	const total = Number(subTotal) + Number(tax);
 	return (
 		<div className="w-full flex flex-col gap-5 bg-[var(--color-bg-card)] shadow-lg p-4">
+			{/* modal to mount when needed */}
+			{isShowing && <OrderInfoForm onClose={() => setIsShowing(false)} />}
 			<h2 className="text-lg font-semibold">Order Summary</h2>
 			<div className="flex items-center justify-between">
 				<p className="text-sm">Subtotal</p>
@@ -31,7 +36,10 @@ const OrderSummary = ({
 				<span className="text-base font-bold">KES. {total}</span>
 			</div>
 
-			<BouncyButton type="submit" className="bg-[var(--color-primary)]">
+			<BouncyButton
+				onClick={() => setIsShowing(true)}
+				type="submit"
+				className="bg-[var(--color-primary)]">
 				Proceed to Checkout
 			</BouncyButton>
 		</div>
