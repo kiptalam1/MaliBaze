@@ -3,7 +3,6 @@ dotenv.config();
 
 import mongoose from "mongoose";
 import Product from "./models/product.model.js";
-import getEnv from "./utils/env.utils.js";
 import { generateSKU } from "./utils/product.utils.js";
 import { findOrCreateCategory } from "./utils/category.utils.js";
 

@@ -30,7 +30,7 @@ router.post(
 );
 
 router.post("/logout", logoutUser);
-router.get("/admin-route", authenticateUser, isAdmin, (req, res) => {
+router.get("/admin-route", authenticateUser, isAdmin, (_req, res) => {
 	res.json({ message: "accepted" });
 });
 router.post("/refresh-token", refreshAccessToken);
