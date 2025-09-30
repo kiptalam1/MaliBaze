@@ -96,14 +96,14 @@ export const loginUser = async (
 		res.cookie("accessToken", accessToken, {
 			httpOnly: true,
 			secure: getEnv("NODE_ENV") === "production",
-			sameSite: "none",
+			sameSite: getEnv("NODE_ENV") === "production" ? "none" : "lax",
 			maxAge: 15 * 60 * 1000, //15min;
 		});
 
 		res.cookie("refreshToken", refreshToken, {
 			httpOnly: true,
 			secure: getEnv("NODE_ENV") === "production",
-			sameSite: "none",
+			sameSite: getEnv("NODE_ENV") === "production" ? "none" : "lax",
 			maxAge: 7 * 24 * 60 * 60 * 1000, //7days;
 		});
 		//then return response;
@@ -152,7 +152,7 @@ export const logoutUser = async (req: Request, res: Response) => {
 		res.clearCookie("accessToken", {
 			httpOnly: true,
 			secure: getEnv("NODE_ENV") === "production",
-			sameSite: "none",
+			sameSite: getEnv("NODE_ENV") === "production" ? "none" : "lax",
 		});
 
 		return res.status(200).json({ message: "Logged out successfully" });
@@ -208,14 +208,14 @@ export const refreshAccessToken = async (
 		res.cookie("accessToken", newAccessToken, {
 			httpOnly: true,
 			secure: isProd,
-			sameSite: "none",
+			sameSite: isProd ? "none" : "lax",
 			maxAge: 15 * 60 * 1000, //15 minutes;
 		});
 
 		res.cookie("refreshToken", newRefreshToken, {
 			httpOnly: true,
 			secure: isProd,
-			sameSite: "none",
+			sameSite: isProd ? "none" : "lax",
 			maxAge: 7 * 24 * 60 * 60 * 1000, // 7days;
 		});
 

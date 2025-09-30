@@ -8,7 +8,7 @@ const LoginForm = () => {
 	const navigate = useNavigate();
 	const [showPassword, setShowPassword] = useState<boolean>(false);
 	const location = useLocation();
-	const { login } = useContext(AuthContext)!;
+	const { login, loading } = useContext(AuthContext)!;
 
 	const [formData, setFormData] = useState({
 		email: "",
@@ -83,7 +83,7 @@ const LoginForm = () => {
 				</div>
 
 				<BouncyButton type="submit" className="bg-[var(--color-primary)] mt-5">
-					Sign In
+					{loading ? "Signing in..." : "Sign In"}
 				</BouncyButton>
 			</form>
 			<div className="text-sm">

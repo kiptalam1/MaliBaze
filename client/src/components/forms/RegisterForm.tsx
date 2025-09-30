@@ -7,6 +7,7 @@ import type { AxiosError } from "axios";
 import { toast } from "sonner";
 
 const RegisterForm = () => {
+	const [loading, setLoading] = useState(false);
 	const navigate = useNavigate();
 	const location = useLocation();
 	const from = (location.state as { from?: string })?.from || "/";
@@ -31,6 +32,7 @@ const RegisterForm = () => {
 		}
 
 		try {
+			setLoading(true);
 			const response = await api.post("/auth/signup", {
 				email: formData.email,
 				name: formData.name,
@@ -45,6 +47,8 @@ const RegisterForm = () => {
 					err.message ||
 					"Sign up failed. Try again later."
 			);
+		} finally {
+			setLoading(false);
 		}
 	};
 
@@ -120,7 +124,7 @@ const RegisterForm = () => {
 					/>
 				</div>
 				<BouncyButton type="submit" className="bg-[var(--color-primary)] mt-5">
-					Create Account
+					{loading ? "Creating..." : "Create Account"}
 				</BouncyButton>
 			</form>
 			<div className="text-sm">
