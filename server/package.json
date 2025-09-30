@@ -7,7 +7,7 @@
 	"scripts": {
 		"dev": "tsx watch src/server.ts",
 		"build": "tsc",
-		"start": "tsc && node dist/server.js",
+		"start": "node dist/server.js",
 		"populate": "tsx src/populateProducts.ts"
 	},
 	"keywords": [],
