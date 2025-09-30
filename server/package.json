@@ -2,7 +2,7 @@
 	"name": "server",
 	"version": "1.0.0",
 	"description": "",
-	"main": "server.ts",
+	"main": "dist/server.js",
 	"type": "module",
 	"scripts": {
 		"dev": "tsx watch src/server.ts",
