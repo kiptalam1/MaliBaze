@@ -20,7 +20,10 @@ const app = express();
 connectToMongoDb();
 
 // middleware;
-const allowedOrigins = ["http://localhost:3000"];
+const allowedOrigins = [
+	"http://localhost:3000",
+	"https://malibazee.onrender.com",
+];
 app.use(
 	cors({
 		origin: allowedOrigins,
