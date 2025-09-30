@@ -92,7 +92,8 @@ export const getMyOrders = async (
 
 		const orders = await Order.find({ user: userId })
 			.populate("items.product", "name price imageUrl")
-			.lean();
+			.lean()
+			.sort({ createdAt: -1 });
 
 		return res.status(200).json({ orders });
 	} catch (error) {

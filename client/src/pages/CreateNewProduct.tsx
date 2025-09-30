@@ -158,7 +158,7 @@ const CreateNewProduct = () => {
 							value={formData.imageUrl}
 							onChange={handleFormInput}
 							required
-							placeholder="Enter image url"
+							placeholder="Enter image url from pexels.com or unsplash.com"
 							className="w-full border border-[var(--color-border)] py-1 px-4 rounded-lg outline-none focus:ring focus:ring-[var(--color-primary)]"
 						/>
 					</div>

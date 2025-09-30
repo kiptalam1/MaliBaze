@@ -18,7 +18,7 @@ const OrderSummary = ({
 			<h2 className="text-lg font-semibold">Order Summary</h2>
 			<div className="flex items-center justify-between">
 				<p className="text-sm">Subtotal</p>
-				<span className="text-base font-light">KES. {subTotal}</span>
+				<span className="text-base font-light">KES. {subTotal.toFixed(2)}</span>
 			</div>
 
 			<div className="flex items-center justify-between">
@@ -33,7 +33,7 @@ const OrderSummary = ({
 
 			<div className="flex items-center justify-between">
 				<p className="text-base font-bold">Total</p>
-				<span className="text-base font-bold">KES. {total}</span>
+				<span className="text-base font-bold">KES. {total.toFixed(2)}</span>
 			</div>
 
 			<BouncyButton
