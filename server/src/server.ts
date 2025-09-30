@@ -3,6 +3,7 @@ import type { Request, Response } from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
+import cors from "cors";
 dotenv.config();
 
 // functions;
@@ -19,6 +20,13 @@ const app = express();
 connectToMongoDb();
 
 // middleware;
+const allowedOrigins = ["http://localhost:3000"];
+app.use(
+	cors({
+		origin: allowedOrigins,
+		credentials: true,
+	})
+);
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
