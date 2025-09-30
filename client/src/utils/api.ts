@@ -47,6 +47,23 @@ export const setupInterceptors = ({
 					return Promise.reject(error);
 				}
 			}
+			// Skip toasting if it's /users/me and 401
+			if (
+				error.response?.status === 401 &&
+				originalRequest.url?.includes("/users/me")
+			) {
+				return Promise.reject(error);
+			}
+
+			// handle token mismatch / forbidden
+			if (
+				error.response?.status === 403 &&
+				(error.response?.data?.message?.toLowerCase().includes("token") ||
+					error.response?.data?.error?.toLowerCase().includes("token"))
+			) {
+				toast.error("Your session has expired. Please log in again.");
+				return Promise.reject(error);
+			}
 
 			const message =
 				error.response?.data.message ||
@@ -54,7 +71,10 @@ export const setupInterceptors = ({
 				error.message ||
 				"Unknown error";
 
-			toast.error(message);
+			// only toast generic errors that make sense to end-user
+			if (error.response?.status !== 401) {
+				toast.error(message);
+			}
 			return Promise.reject(error);
 		}
 	);

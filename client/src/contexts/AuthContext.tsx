@@ -24,6 +24,8 @@ interface AuthContextType {
 	}) => Promise<boolean | void>;
 	logout: () => Promise<void>;
 	loading: boolean;
+	initializing: boolean;
+	setInitializing: Dispatch<SetStateAction<boolean>>;
 	setLoading: Dispatch<SetStateAction<boolean>>;
 	setUser: Dispatch<SetStateAction<User | null>>;
 	getCurrentUser: () => Promise<User | void>;
@@ -50,6 +52,7 @@ const normalizeUser = (user: BackendUser): User => ({
 const AuthProvider = ({ children }: { children: ReactNode }) => {
 	const [user, setUser] = useState<User | null>(null);
 	const [loading, setLoading] = useState<boolean>(false);
+	const [initializing, setInitializing] = useState<boolean>(true);
 
 	const login = async (formData: {
 		email: string;
@@ -70,7 +73,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 	};
 
 	const getCurrentUser = async () => {
-		setLoading(true);
+		setInitializing(true);
 		try {
 			const response = await api.get("/users/me", {});
 			const normalized = normalizeUser(response.data.user);
@@ -79,7 +82,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 		} catch {
 			setUser(null);
 		} finally {
-			setLoading(false);
+			setInitializing(false);
 		}
 	};
 
@@ -122,6 +125,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 				logout,
 				loading,
 				setLoading,
+				initializing,
+				setInitializing,
 				setUser,
 				getCurrentUser,
 				refreshAccessToken,
