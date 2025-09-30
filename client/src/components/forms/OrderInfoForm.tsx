@@ -1,6 +1,7 @@
 import { useState } from "react";
 import BouncyButton from "../ui/BouncyButton";
 import usePlaceOrder from "../../hooks/usePlaceOrder";
+import { useNavigate } from "react-router-dom";
 
 const OrderInfoForm = ({ onClose }: { onClose: () => void }) => {
 	const [destination, setDestination] = useState("");
@@ -8,6 +9,8 @@ const OrderInfoForm = ({ onClose }: { onClose: () => void }) => {
 		"standard"
 	);
 	const { mutate, isPending } = usePlaceOrder("/orders/place");
+
+	const navigate = useNavigate();
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
@@ -18,7 +21,12 @@ const OrderInfoForm = ({ onClose }: { onClose: () => void }) => {
 					shippingMethod: shippingMethod || "standard",
 				},
 			},
-			{ onSuccess: onClose }
+			{
+				onSuccess: () => {
+					onClose();
+					navigate("/orders");
+				},
+			}
 		);
 	};
 
