@@ -1,6 +1,8 @@
+import { useNavigate } from "react-router-dom";
 import BouncyButton from "../ui/BouncyButton";
 
 const Header = () => {
+	const navigate = useNavigate();
 	return (
 		<header className="w-full flex flex-col items-center justify-center gap-5 p-6 sm:p-10 bg-linear-to-r/oklab from-[var(--color-bg)] via-[var(--color-border)] to-[var(--color-bg-card)] text-[var(--color-text-primary)] text-center">
 			<p
@@ -18,12 +20,14 @@ const Header = () => {
 			</p>
 			<div className="flex flex-col gap-5 sm:flex-row">
 				<BouncyButton
-					onClick={() => console.log("button clicked")}
+					type="button"
+					onClick={() => navigate("/categories")}
 					className="bg-[var(--color-primary)]">
 					Shop Now
 				</BouncyButton>
 				<BouncyButton
-					onClick={() => console.log("clicked")}
+					type="button"
+					onClick={() => navigate("/categories")}
 					className="bg-[var(--color-bg-card)]">
 					Browse Categories
 				</BouncyButton>
