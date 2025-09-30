@@ -36,21 +36,39 @@ export const placeOrder = async (
 		if (!cart || cart.products.length === 0) {
 			return res.status(400).json({ error: "Cart is empty" });
 		}
+
+		// filter out invalid/null products
+		const validProducts = cart.products.filter((p) => p.product !== null);
+
+		if (validProducts.length !== cart.products.length) {
+			// clean cart in DB so bad refs don’t keep breaking things
+			cart.products = validProducts;
+			await cart.save();
+		}
+
+		if (validProducts.length === 0) {
+			return res.status(400).json({
+				error: "Your cart has invalid items. Please add products again.",
+			});
+		}
 		// create an order with info;
-		const totalAmount = cart.products.reduce(
-			(sum, prod) => sum + (prod.product as IProduct).price * prod.quantity,
-			0
-		);
+		const totalAmount = validProducts.reduce((sum, p) => {
+			const prod = p.product as IProduct;
+			return sum + prod.price * p.quantity;
+		}, 0);
 		const nanoid = customAlphabet("1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ", 8);
 
 		const order = new Order({
 			user: user._id,
-			items: cart.products.map((p) => ({
-				product: (p.product as IProduct)._id,
-				name: (p.product as IProduct).name,
-				quantity: p.quantity,
-				price: (p.product as IProduct).price,
-			})),
+			items: validProducts.map((p) => {
+				const prod = p.product as IProduct;
+				return {
+					product: prod._id,
+					name: prod.name,
+					quantity: p.quantity,
+					price: prod.price,
+				};
+			}),
 			destination: destination,
 			shippingMethod: shippingMethod || "standard",
 			trackingNumber: `TRK-${Date.now()}`,
